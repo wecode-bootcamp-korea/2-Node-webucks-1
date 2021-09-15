@@ -1,12 +1,15 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
 import express from 'express';
+
+dotenv.config();
 const app = express();
-let port = 8000;
+const PORT = process.env.PORT;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
   res.send('Hello world!');
 });
 
-const server = app.listen(port, () => {
-  console.log(`server on ${port}`);
-});
+app.listen(PORT, () => console.log(`server on ${PORT}`));
