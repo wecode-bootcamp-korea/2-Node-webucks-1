@@ -106,12 +106,13 @@ model NutritionCoffee {
 }
 
 model CoffeeLike {
-  id       Int    @id @default(autoincrement())
-  userId   Int
-  coffeeId Int    @map("coffees_id")
-  user     User   @relation(fields: [userId], references: [id])
-  coffee   Coffee @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
+  id       Int  @id @default(autoincrement())
+  userId   Int?
+  coffeeId Int? @map("coffees_id")
 
+
+  user   User?   @relation(fields: [userId], references: [id])
+  coffee Coffee? @relation(fields: [coffeeId], references: [id])
   @@unique([userId, coffeeId])
   @@map("coffees_likes")
 }
@@ -128,12 +129,12 @@ model Comment {
 }
 
 model CommentLike {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @map("users_id")
-  commentId Int     @map("comments_id")
-  user      User    @relation(fields: [userId], references: [id])
-  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  id        Int  @id @default(autoincrement())
+  userId    Int? @map("users_id")
+  commentId Int? @map("comments_id")
 
+  user    User?    @relation(fields: [userId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
   @@unique([userId, commentId])
   @@map("comments_likes")
 }

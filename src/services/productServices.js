@@ -12,3 +12,5 @@ export const getProductsService = async () => {
 export const getProductService = async (req, next) => {
   return findOneProduct(req, next);
 };
+
+export const likeService = async (req, res, next) => {};
