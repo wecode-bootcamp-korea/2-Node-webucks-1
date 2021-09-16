@@ -4,12 +4,13 @@ export const findManyProducts = async () => {
   return client.$queryRaw`SELECT c.id, c.koreanName,c.englishName,c.description FROM coffees c;`;
 };
 
-export const findOneProduct = async (req, res, next) => {
+export const findOneProduct = async (req, next) => {
   const {
     params: { id },
   } = req;
 
   try {
+    throw new Error();
     return client.coffee.findMany({
       where: {
         id: Number(id),

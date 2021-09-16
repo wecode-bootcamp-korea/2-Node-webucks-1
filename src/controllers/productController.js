@@ -15,6 +15,6 @@ export const getProducts = async (req, res) => {
 };
 
 export const getProduct = async (req, res, next) => {
-  const data = await getProductService(req, res, next);
+  const data = await getProductService(req, next);
   res.json(data);
 };

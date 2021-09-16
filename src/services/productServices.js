@@ -9,6 +9,6 @@ export const getProductsService = async () => {
   return findManyProducts();
 };
 
-export const getProductService = async (req, res, next) => {
-  return findOneProduct(req, res, next);
+export const getProductService = async (req, next) => {
+  return findOneProduct(req, next);
 };

@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import productRouter from './routes/productRouter';
+import userRouter from './routes/userRouter';
 
 dotenv.config();
 const app = express();
@@ -10,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/products', productRouter);
+app.use('/users', userRouter);
 
 app.use(function (err, req, res, next) {
   return res.status(500).json({
