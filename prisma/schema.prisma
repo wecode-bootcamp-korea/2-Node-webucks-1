@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id          Int             @id @default(autoincrement())
+  name        String
+  product    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id           Int             @id @default(autoincrement())
+  categoryId   Int             @map("category_id")
+  koreanName   Int             @map("korean_name")
+  englishName  String          @map("english_name")
+  category     Category        @relation(fields: [categoryId], references: [id])
+  image        Image[]
+  productAllergy ProductAllergy[]
+  nutrition    Nutrition?
+
+  @@map("products")
+}
+
+model Image {
+  id           Int              @id @default(autoincrement())
+  imageUrl     String           @map("image_url")
+  productId    Int              @map("product_id")
+  product      Product          @relation(fields: [productId], references: [id])
+
+  @@map("images")
+}
+
+model Allergy {
+  id           Int              @id @default(autoincrement())
+  name         String
+  productAllergy ProductAllergy[]
+
+  @@map("allergies")
+}
+
+model ProductAllergy {
+  id           Int              @id @default(autoincrement())
+  productId    Int              @map("product_id")
+  allergyId    Int              @map("allergy_id")
+  product      Product          @relation(fields: [productId], references: [id])
+  allergy      Allergy          @relation(fields: [allergyId], references: [id])
+
+  @@map("products_allergies")
+}
+
+model Nutrition {
+  id           Int              @id @default(autoincrement())
+  name         String
+  productId    Int              @map("product_id")
+  amount       String
+  product      Product          @relation(fields: [productId], references: [id])
+  @@map("nutritions")
+}
+
+model User {
+  id           Int              @id @default(autoincrement())
+  email        String           @unique
+  password     String         
+  username     String?
+  address      String?
+  phone_number String?
+  policy_agreed Boolean         @default(true)
+
+  @@map("users")
+}
