@@ -1,18 +1,16 @@
 import client from './client';
 
-export const checkIsExist = async (req, next) => {
-  const {
-    body: { email },
-  } = req;
+export const findUserByEmail = async (next, email) => {
   try {
-    const isExist = await client.user.count({ where: { email } });
-    return !!isExist;
+    return client.$queryRaw`
+    SELECT * from users u WHERE u.email=${email};
+    `;
   } catch (e) {
     next(e);
   }
 };
 
-export const createUser = async (req, res, password) => {
+export const createUser = async (req, res, next, password) => {
   const {
     body: { email },
   } = req;
@@ -22,9 +20,13 @@ export const createUser = async (req, res, password) => {
     INSERT INTO users(email,password,updated_at) VALUES(${email},${password},${new Date()});
     `;
 
-    const data = await client.$queryRaw`
-    SELECT u.email from users u WHERE u.email=${email};
-    `;
+    const data = await findUserByEmail(next, email);
+
+    if (data.length) {
+      delete data[0].password;
+      delete data[0].id;
+      delete data[0].updated_at;
+    }
 
     return {
       ok: true,
