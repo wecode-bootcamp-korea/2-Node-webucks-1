@@ -10,7 +10,6 @@ export const findOneProduct = async (req, next) => {
   } = req;
 
   try {
-    throw new Error();
     return client.coffee.findMany({
       where: {
         id: Number(id),
@@ -40,5 +39,58 @@ export const findOneProduct = async (req, next) => {
     });
   } catch (e) {
     next(e);
+  }
+};
+
+export const updateLike = async coffeeId => {
+  const {
+    locals: { user },
+  } = req;
+
+  try {
+    const isExist = await client.coffeeLike.findUnique({
+      where: {
+        userId_coffeeId: {
+          userId: user.id,
+          coffeeId,
+        },
+      },
+    });
+
+    if (isExist) {
+      await client.coffeeLike.update({
+        where: {
+          userId_coffeeId: {
+            userId: user.id,
+            coffeeId,
+          },
+        },
+        data: {
+          coffee: {
+            disconnect: true,
+          },
+          user: {
+            disconnect: true,
+          },
+        },
+      });
+    } else {
+      await client.coffeeLike.create({
+        data: {
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
+          coffee: {
+            connect: {
+              id: coffeeId,
+            },
+          },
+        },
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
 };

@@ -18,3 +18,5 @@ export const getProduct = async (req, res, next) => {
   const data = await getProductService(req, next);
   res.json(data);
 };
+
+export const likeController = async (req, res, next) => {};
