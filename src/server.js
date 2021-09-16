@@ -65,4 +65,25 @@ app.get('/products/:id', async (req, res) => {
   res.json(selectedProduct);
 });
 
+app.post('/users', async (req, res) => {
+  await prisma.$queryRaw`
+    INSERT INTO users (email, password, username, address, phone_number)
+    VALUES ("yebom1@wecode.com", "yebom1", "이예봄", "경주빵이 맛있는 경주", "010-1111-1111"),
+    ("wook1@wecode.com", "wook1", "이욱창", "광명 이케아 닭다리 맛있음", "010-2222-2222"),
+    ("jeonghoon1@wecode.com", "hoon1", "박정훈", "지금은 종로타워가 곧 집", "010-3333-3333"),
+    ("changhyeon1@wecode.com", "hyeon1", "윤창현", "선릉역 인도커리 사랑해요", "010-4444-4444"),
+    ("jeongho1@wecode.com", "ho1", "신정호", "저도 목동 아이스링크 가봤어요", "010-5555-5555"),
+    ("dabin1@wecode.com", "bin1", "안다빈", "북한산의 정기를 받고 쑥쑥 자란 은평구민", "010-6666-6666")
+  `;
+
+  const user = await prisma.$queryRaw`
+    SELECT *
+    FROM users
+    ORDER BY id DESC
+    LIMIT 6;
+  `;
+
+  res.json(user);
+});
+
 app.listen(PORT, () => console.log(`server on ${PORT}`));
