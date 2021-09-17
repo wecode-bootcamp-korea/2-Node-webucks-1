@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id    Int     @id @default(autoincrement())
+  name  String
+  drink Drink[]
+
+  @@map("categories")
+}
+
+model Drink {
+  id            Int            @id @default(autoincrement())
+  koreanName    String         @map("korean_name")
+  englishName   String         @map("english_name")
+  categoryId    Int            @map("category_id")
+  category      Category       @relation(fields: [categoryId], references: [id])
+  image         Image[]
+  drinksallergy DrinkAllergy[]
+  nutritions    Nutrition?
+
+  @@map("drinks")
+}
+
+model Image {
+  id       Int    @id @default(autoincrement())
+  imageUrl String @map("image_url") @db.VarChar(300)
+  drinkId  Int    @map("drink_id")
+  drink    Drink  @relation(fields: [drinkId], references: [id])
+
+  @@map("images")
+}
+
+model Allergy {
+  id           Int            @id @default(autoincrement())
+  name         String
+  drinkallergy DrinkAllergy[]
+
+  @@map("allergies")
+}
+
+model DrinkAllergy {
+  id        Int     @id @default(autoincrement())
+  drinkId   Int     @map("drink_id")
+  drink     Drink   @relation(fields: [drinkId], references: [id])
+  allergyId Int     @map("allergy_id")
+  allergy   Allergy @relation(fields: [allergyId], references: [id])
+
+  @@map("drinks_allergies")
+}
+
+model Nutrition {
+  id      Int    @id @default(autoincrement())
+  name    String
+  drinkId Int    @map("drink_id")
+  amount  Int
+  drink   Drink  @relation(fields: [drinkId], references: [id])
+
+  @@map("nutritions")
+}
+
+model User {
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  password     String
+  username     String?
+  address      String?
+  phoneNumber  String? @map("phone_number")
+  policyAgreed Boolean @default(true) @map("policy_agreed")
+
+  @@map("users")
+}
