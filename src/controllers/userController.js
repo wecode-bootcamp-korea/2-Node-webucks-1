@@ -5,9 +5,18 @@ const getUser = async (req, res) => {
   res.json(users);
 };
 
-const setUsers = async (req, res) => {
-  const user = await userService.setUsers();
+const setUser = async (req, res) => {
+  const { email, password, username, address, phoneNumber, policyAgreed } =
+    req.body;
+  const user = await userService.setUser(
+    email,
+    password,
+    username,
+    address,
+    phoneNumber,
+    policyAgreed
+  );
   res.json(user);
 };
 
-export default { getUser, setUsers };
+export default { getUser, setUser };
