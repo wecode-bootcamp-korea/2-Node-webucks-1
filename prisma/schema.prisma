@@ -1,0 +1,140 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String   @unique
+
+  coffee Coffee[]
+  @@map("categories")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  email       String        @unique
+  password    String
+  coffeeLike  CoffeeLike[]
+  commentLike CommentLike[]
+
+  @@map("users")
+}
+
+model Size {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  amount   String @unique
+  coffee   Coffee @relation(fields: [coffeeId], references: [id])
+  coffeeId Int    @map("coffees_id")
+
+  @@map("sizes")
+}
+
+model Coffee {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  koreanName  String
+  englishName String
+  description String
+  categoryId  Int          @map("categories_id")
+  coffeeLike  CoffeeLike[]
+  allergy     Allergy[]
+  category    Category     @relation(fields: [categoryId], references: [id])
+  Image       Image[]
+  size        Size[]
+
+  NutritionAmount NutritionCoffee[]
+  @@map("coffees")
+}
+
+model Allergy {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String   @unique
+  coffee    Coffee[]
+
+  @@map("allergies")
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  mainId    Int?     @map("main_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  src       String
+
+  coffee   Coffee @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
+  coffeeId Int    @map("coffees_id")
+
+  @@map("images")
+}
+
+model Nutrition {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  name      String   @unique
+
+  NutritionAmount NutritionCoffee[]
+  @@map("nutritions")
+}
+
+model NutritionCoffee {
+  id          Int    @id @default(autoincrement())
+  amount      String
+  nutritionId Int    @map("nutrition_id")
+  coffeeId    Int    @map("coffee_id")
+
+  coffee    Coffee    @relation(fields: [coffeeId], references: [id])
+  nutrition Nutrition @relation(fields: [nutritionId], references: [id])
+
+  @@map("nutrition_coffee")
+}
+
+model CoffeeLike {
+  id       Int  @id @default(autoincrement())
+  userId   Int?
+  coffeeId Int? @map("coffees_id")
+
+
+  user   User?   @relation(fields: [userId], references: [id])
+  coffee Coffee? @relation(fields: [coffeeId], references: [id])
+  @@unique([userId, coffeeId])
+  @@map("coffees_likes")
+}
+
+model Comment {
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  description String
+  userId      Int           @map("users_id")
+  commentLike CommentLike[]
+
+  @@map("comments")
+}
+
+model CommentLike {
+  id        Int  @id @default(autoincrement())
+  userId    Int? @map("users_id")
+  commentId Int? @map("comments_id")
+
+  user    User?    @relation(fields: [userId], references: [id])
+  comment Comment? @relation(fields: [commentId], references: [id])
+  @@unique([userId, commentId])
+  @@map("comments_likes")
+}
