@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Category {
+  id          Int             @id @default(autoincrement())
+  name        String
+  product    Product[]
+  
+  @@map("categories")
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  categoryId Int @map("category_id")
+  koreanName String @map("korean_name")
+  englishName String @map("english_name")
+  description String @map("description")
+  category Category @relation(fields: [categoryId], references:[id])
+  image Image[]
+  nutrition Nutrition[]
+  productAllergy ProductAllergy[]
+
+  @@map("products")
+}
+
+model Nutrition {
+  id Int @id @default(autoincrement())
+  name String?
+  productId Int @map("product_id")
+  amount Int 
+  product Product @relation(fields: [productId], references:[id])
+
+  @@map("nutritions")
+}
+
+model Image {
+  id          Int               @id @default(autoincrement())
+  image_url   String            @map("image_url")
+  productId   Int               @map("product_id")
+  product     Product           @relation(fields: [productId], references:[id])
+
+  @@map("images")
+}
+
+model Allergy {
+  id          Int               @id @default(autoincrement())
+  name        String
+  productAllergy ProductAllergy[]
+  
+  @@map("allergies") 
+}
+
+model ProductAllergy {
+  id           Int              @id @default(autoincrement())
+  productId    Int              @map("product_id")
+  allergyId    Int              @map("allergy_id")
+  product      Product          @relation(fields: [productId], references: [id])
+  allergy      Allergy          @relation(fields: [allergyId], references: [id])
+  
+  @@map("products_allergies")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  password      String
+  username      String?
+  address       String?
+  phone_number  String?
+  policy_agreed Boolean         @default(true)
+
+  @@map("users")
+}
