@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
-import productRouter from './routes/productRouter';
-import userRouter from './routes/userRouter';
+import routes from './routes';
 
 dotenv.config();
 const app = express();
@@ -10,8 +9,8 @@ const PORT = process.env.PORT;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use('/products', productRouter);
-app.use('/users', userRouter);
+app.use('/products', routes.productRouter);
+app.use('/users', routes.userRouter);
 
 app.use(function (err, req, res, next) {
   return res.status(500).json({

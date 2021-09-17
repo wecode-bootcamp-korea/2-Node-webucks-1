@@ -19,10 +19,7 @@ export const joinService = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     return createUser(req, res, next, hashedPassword);
   } catch (e) {
-    res.json({
-      ok: false,
-      error: '알수없는 오류가 발생했습니다. 관리자에게 문의하세요.',
-    });
+    next(e);
   }
 };
 
@@ -42,7 +39,6 @@ export const loginService = async (req, res, next) => {
 
   try {
     const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
-
     if (!isPassCorrect) {
       res.status(400).json({
         ok: false,

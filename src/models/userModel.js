@@ -33,9 +33,6 @@ export const createUser = async (req, res, next, password) => {
       ...(Array.isArray(data) ? { data: data[0] } : { data }),
     };
   } catch (e) {
-    res.json({
-      ok: false,
-      error: '알수없는 오류가 발생했습니다. 관리자에게 문의하세요.',
-    });
+    next(e);
   }
 };
