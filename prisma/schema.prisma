@@ -11,72 +11,79 @@ generator client {
 }
 
 model Category {
-  id          Int             @id @default(autoincrement())
-  name        String
-  product    Product[]
-  
+  id      Int       @id @default(autoincrement())
+  name    String
+  product Product[]
+
   @@map("categories")
 }
 
 model Product {
-  id Int @id @default(autoincrement())
-  categoryId Int @map("category_id")
-  koreanName String @map("korean_name")
-  englishName String @map("english_name")
-  description String @map("description")
-  category Category @relation(fields: [categoryId], references:[id])
-  image Image[]
-  nutrition Nutrition[]
+  id             Int              @id @default(autoincrement())
+  categoryId     Int              @map("category_id")
+  koreanName     String           @map("korean_name")
+  englishName    String           @map("english_name")
+  description    String           @map("description")
+  category       Category         @relation(fields: [categoryId], references: [id])
+  image          Image[]
+  nutrition      Nutrition[]
   productAllergy ProductAllergy[]
 
   @@map("products")
 }
 
 model Nutrition {
-  id Int @id @default(autoincrement())
-  name String?
-  productId Int @map("product_id")
-  amount Int 
-  product Product @relation(fields: [productId], references:[id])
+  id        Int     @id @default(autoincrement())
+  name      String?
+  size      String?
+  kcal      Float
+  fat       Float
+  protein   Float
+  sodium    Float
+  sugar     Float
+  caffeine  Float
+  productId Int     @map("product_id")
+  amount    Int
+  product   Product @relation(fields: [productId], references: [id])
 
   @@map("nutritions")
 }
 
 model Image {
-  id          Int               @id @default(autoincrement())
-  image_url   String            @map("image_url")
-  productId   Int               @map("product_id")
-  product     Product           @relation(fields: [productId], references:[id])
+  id        Int     @id @default(autoincrement())
+  imageUrl  String  @map("image_url")
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
 
   @@map("images")
 }
 
 model Allergy {
-  id          Int               @id @default(autoincrement())
-  name        String
+  id             Int              @id @default(autoincrement())
+  name           String
   productAllergy ProductAllergy[]
-  
-  @@map("allergies") 
+
+  @@map("allergies")
 }
 
 model ProductAllergy {
-  id           Int              @id @default(autoincrement())
-  productId    Int              @map("product_id")
-  allergyId    Int              @map("allergy_id")
-  product      Product          @relation(fields: [productId], references: [id])
-  allergy      Allergy          @relation(fields: [allergyId], references: [id])
-  
+  id        Int     @id @default(autoincrement())
+  productId Int     @map("product_id")
+  allergyId Int     @map("allergy_id")
+  product   Product @relation(fields: [productId], references: [id])
+  allergy   Allergy @relation(fields: [allergyId], references: [id])
+
   @@map("products_allergies")
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String          @unique
-  password      String
-  username      String?
-  address       String?
-  phone_number  String?
-  policy_agreed Boolean         @default(true)
+  id           Int     @id @default(autoincrement())
+  email        String  @unique
+  password     String
+  username     String?
+  address      String?
+  phoneNumber  String? @map("phone_number")
+  policyAgreed Boolean @default(true) @map("policy_agreed")
 
   @@map("users")
 }
