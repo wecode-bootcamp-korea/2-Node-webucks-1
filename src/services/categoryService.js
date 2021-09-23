@@ -1,4 +1,4 @@
-import categoryModels from '../models/categoryModels';
+import { categoryModels } from '../models';
 
 const getCategory = async () => {
   const category = await categoryModels.getCategory();

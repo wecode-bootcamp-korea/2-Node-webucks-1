@@ -1,4 +1,4 @@
-import userModel from '../models/userModel';
+import { userModel } from '../models';
 
 const getUser = async () => {
   const users = await userModel.getUser();

@@ -1,4 +1,4 @@
-import productModels from '../models/productModels';
+import { productModels } from '../models';
 
 const getProduct = async () => {
   const product = await productModels.getProduct();
