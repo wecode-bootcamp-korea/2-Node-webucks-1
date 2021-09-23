@@ -90,3 +90,120 @@ export const updateComment = async (commentId, description, next) => {
     next(e);
   }
 };
+
+export const createRecomment = async (userId, commentId, description, next) => {
+  try {
+    await client.$queryRaw`
+    INSERT INTO
+      re_comments(
+        description,
+        users_id,
+        comments_id
+      )
+    VALUES(
+      ${description},
+      ${userId},
+      ${commentId}
+    );
+    `;
+
+    const data = await findRecommentByCreatedAt(userId, next);
+    return {
+      ok: true,
+      data: data[0],
+    };
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const findRecommentByCreatedAt = async (userId, next) => {
+  try {
+    return client.$queryRaw`
+      SELECT 
+        r.id,
+        r.created_at,
+        r.description
+      FROM re_comments r
+      WHERE
+        users_id=${userId}
+      ORDER BY
+        created_at
+      DESC;
+    `;
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const createCommentlike = async (userId, commentId, next) => {
+  try {
+    await client.$queryRaw`
+      INSERT INTO
+      comments_likes(
+        users_id,
+        comments_id
+      )
+      VALUES(
+        ${userId},
+        ${commentId}
+      );
+    `;
+
+    return {
+      ok: true,
+    };
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const deleteCommentLike = async (userId, commentId, next) => {
+  const isExist = await findCommentLikeByIds(userId, commentId, next);
+  console.log(userId, commentId, isExist);
+  if (!isExist.ok) {
+    return isExist;
+  }
+
+  try {
+    await client.$queryRaw`
+    DELETE 
+    FROM comments_likes
+    WHERE
+      id=${isExist.data.id}
+    `;
+  } catch (e) {
+    next(e);
+  }
+
+  return {
+    ok: true,
+  };
+};
+
+export const findCommentLikeByIds = async (userId, commentId, next) => {
+  try {
+    const isExist = await client.$queryRaw`
+    SELECT l.id
+    FROM comments_likes l
+    WHERE
+      comments_id=${commentId}
+        AND
+      users_id=${userId};
+    `;
+
+    if (!isExist.length) {
+      return {
+        ok: false,
+        error: '수정권한이 없습니다.',
+      };
+    } else {
+      return {
+        ok: true,
+        data: isExist[0],
+      };
+    }
+  } catch (e) {
+    next(e);
+  }
+};

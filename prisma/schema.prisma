@@ -28,6 +28,8 @@ model User {
   password    String
   coffeeLike  CoffeeLike[]
   commentLike CommentLike[]
+  reComment   ReComment[]
+
 
   @@map("users")
 }
@@ -136,7 +138,23 @@ model Comment {
   userId      Int           @map("users_id")
   commentLike CommentLike[]
 
+
+  reComment ReComment[]
   @@map("comments")
+}
+
+model ReComment {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  description String
+
+  commentId Int     @map("comments_id")
+  userId    Int     @map("users_id")
+  comment   Comment @relation(fields: [commentId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@map("re_comments")
 }
 
 model CommentLike {

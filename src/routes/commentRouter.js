@@ -1,15 +1,19 @@
 import express from 'express';
 import {
   createComment,
+  createCommentlike,
+  createRecomment,
   deleteComment,
+  deleteCommentLike,
   updateComment,
 } from '../controllers/commentControllers';
-import { authMiddleWare } from '../middleWares/authMiddleWare';
 
 const router = express();
 
-router.post('/create', authMiddleWare, createComment);
-router.put('/:id/update', authMiddleWare, updateComment);
-router.delete('/:id/delete', authMiddleWare, deleteComment);
-
+router.post('/create', createComment);
+router.put('/:id/update', updateComment);
+router.delete('/:id/delete', deleteComment);
+router.post('/:id/create', createRecomment);
+router.post('/:id/like', createCommentlike);
+router.delete('/:id/dislike', deleteCommentLike);
 export default router;

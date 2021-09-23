@@ -160,13 +160,19 @@ export const deleteLike = async (req, res, next) => {
       error: '로그인 해야 이용할 수 있는 기능입니다.',
     };
   }
+
   const userExist = await findUserById(locals.userId, next);
   const { id: userId } = userExist[0];
   if (!userId) {
     return {
       ok: false,
-      error: '존재하지 않는 계정입니다.',
+      error: '로그인 하세요.',
     };
+  }
+
+  const isExist = await findLikeByIds(userId, coffeeId);
+  if (!isExist.ok) {
+    return isExist;
   }
 
   try {
@@ -193,4 +199,19 @@ export const deleteLike = async (req, res, next) => {
   } catch (e) {
     next(e);
   }
+};
+
+export const findLikeByIds = async (userId, coffeeId) => {
+  const isExist = await client.$queryRaw`
+    SELECT l.id 
+    FROM coffees_likes l
+    WHERE
+        users_id=${userId}
+      AND
+        coffees_id=${coffeeId};
+  `;
+
+  return !isExist.length
+    ? { ok: false, error: '수정권한이 없습니다.' }
+    : { ok: true };
 };
