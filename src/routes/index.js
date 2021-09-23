@@ -1,5 +1,12 @@
 import commentRouter from './commentRouter';
 import productRouter from './productRouter';
 import userRouter from './userRouter';
+import express from 'express';
 
-export default { commentRouter, productRouter, userRouter };
+const router = express.Router();
+
+router.use('/users', userRouter);
+router.use('/products', productRouter);
+router.use('/comments', commentRouter);
+
+export default router;

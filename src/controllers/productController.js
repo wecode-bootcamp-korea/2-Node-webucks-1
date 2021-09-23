@@ -1,7 +1,9 @@
 import {
+  createLikeService,
   getCategoriesService,
   getProductService,
   getProductsService,
+  deleteLikeService,
 } from '../services/productServices';
 
 export const getCategories = async (req, res) => {
@@ -19,4 +21,12 @@ export const getProduct = async (req, res, next) => {
   res.json(data);
 };
 
-export const likeController = async (req, res, next) => {};
+export const createLike = async (req, res, next) => {
+  const data = await createLikeService(req, res, next);
+  res.json(data);
+};
+
+export const deleteLike = async (req, res, next) => {
+  const data = await deleteLikeService(req, res, next);
+  res.json(data);
+};

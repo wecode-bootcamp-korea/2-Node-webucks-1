@@ -13,3 +13,21 @@ const passwordValid = pw => {
 export const isValid = (email, password) => {
   return emailValid(email) && passwordValid(password);
 };
+
+export const isItemExist = item => {
+  if (typeof item === 'object') {
+    switch (Array.isArray(item)) {
+      case true:
+        return Array.isArray(item) && !!item.length;
+
+      default:
+        let signal = true;
+        for (let keys in item) {
+          if (!item[keys]) {
+            signal = false;
+          }
+        }
+        return signal;
+    }
+  }
+};

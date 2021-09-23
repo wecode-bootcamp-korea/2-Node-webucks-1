@@ -1,4 +1,4 @@
-import { createUser, findUserByEmail } from '../models/userModel';
+import { createUser, findUserByEmail } from '../models/userDAO';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
@@ -17,7 +17,7 @@ export const joinService = async (req, res, next) => {
   }
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    return createUser(req, res, next, hashedPassword);
+    return createUser(req, next, hashedPassword);
   } catch (e) {
     next(e);
   }
@@ -27,7 +27,6 @@ export const loginService = async (req, res, next) => {
   const {
     body: { email, password },
   } = req;
-
   const existUser = await findUserByEmail(next, email);
   if (!existUser.length) {
     res.status(400).json({
@@ -46,7 +45,6 @@ export const loginService = async (req, res, next) => {
       });
       return;
     }
-
     const token = jwt.sign({ id: existUser[0].id }, process.env.SECRET);
     return { ok: true, token };
   } catch (e) {

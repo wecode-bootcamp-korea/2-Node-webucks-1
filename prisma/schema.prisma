@@ -13,17 +13,17 @@ generator client {
 model Category {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   name      String   @unique
+  coffee    Coffee[]
 
-  coffee Coffee[]
   @@map("categories")
 }
 
 model User {
   id          Int           @id @default(autoincrement())
   createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at")
   email       String        @unique
   password    String
   coffeeLike  CoffeeLike[]
@@ -33,11 +33,11 @@ model User {
 }
 
 model Size {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  amount   String @unique
-  coffee   Coffee @relation(fields: [coffeeId], references: [id])
-  coffeeId Int    @map("coffees_id")
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  size String @unique
+
+  coffee Coffee[]
 
   @@map("sizes")
 }
@@ -45,28 +45,42 @@ model Size {
 model Coffee {
   id          Int          @id @default(autoincrement())
   createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  koreanName  String
-  englishName String
+  updatedAt   DateTime     @default(now()) @updatedAt @map("updated_at")
+  koreanName  String       @map("korean_name")
+  englishName String       @map("english_name")
   description String
-  categoryId  Int          @map("categories_id")
+  categoryId  Int?         @map("categories_id")
+  sizeId      Int?         @map("sizes_id")
+  size        Size?        @relation(fields: [sizeId], references: [id], onDelete: SetNull)
   coffeeLike  CoffeeLike[]
-  allergy     Allergy[]
-  category    Category     @relation(fields: [categoryId], references: [id])
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   Image       Image[]
-  size        Size[]
 
-  NutritionAmount NutritionCoffee[]
+  NutritionAmount   NutritionCoffee[]
+  allergyToCoffee   allergyToCoffee?  @relation(fields: [allergyToCoffeeId], references: [id])
+  allergyToCoffeeId Int?              @map("allergy_coffee_id")
+
   @@map("coffees")
+}
+
+model allergyToCoffee {
+  id        Int       @id @default(autoincrement())
+  allergyId Int       @map("allergies_id")
+  coffeeId  Int       @map("coffees_id")
+  allergy   Allergy[]
+  coffee    Coffee[]
+
+  @@map("allergy_coffee")
 }
 
 model Allergy {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  name      String   @unique
-  coffee    Coffee[]
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+  allergy   String   @unique
 
+  allergyToCoffee   allergyToCoffee? @relation(fields: [allergyToCoffeeId], references: [id])
+  allergyToCoffeeId Int?             @map("allergy_coffee_id")
   @@map("allergies")
 }
 
@@ -74,45 +88,42 @@ model Image {
   id        Int      @id @default(autoincrement())
   mainId    Int?     @map("main_id")
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   src       String
-
-  coffee   Coffee @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
-  coffeeId Int    @map("coffees_id")
+  coffee    Coffee   @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
+  coffeeId  Int      @map("coffees_id")
 
   @@map("images")
 }
 
 model Nutrition {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  name      String   @unique
-
+  id              Int               @id @default(autoincrement())
+  createdAt       DateTime          @default(now()) @map("created_at")
+  updatedAt       DateTime          @default(now()) @updatedAt @map("updated_at")
+  nutrient        String            @unique
   NutritionAmount NutritionCoffee[]
+
   @@map("nutritions")
 }
 
 model NutritionCoffee {
-  id          Int    @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   amount      String
-  nutritionId Int    @map("nutrition_id")
-  coffeeId    Int    @map("coffee_id")
-
-  coffee    Coffee    @relation(fields: [coffeeId], references: [id])
-  nutrition Nutrition @relation(fields: [nutritionId], references: [id])
+  nutritionId Int       @map("nutritions_id")
+  coffeeId    Int       @map("coffees_id")
+  coffee      Coffee    @relation(fields: [coffeeId], references: [id])
+  nutrition   Nutrition @relation(fields: [nutritionId], references: [id])
 
   @@map("nutrition_coffee")
 }
 
 model CoffeeLike {
-  id       Int  @id @default(autoincrement())
-  userId   Int?
-  coffeeId Int? @map("coffees_id")
+  id       Int     @id @default(autoincrement())
+  userId   Int?    @map("users_id")
+  coffeeId Int?    @map("coffees_id")
+  user     User?   @relation(fields: [userId], references: [id])
+  coffee   Coffee? @relation(fields: [coffeeId], references: [id])
 
-
-  user   User?   @relation(fields: [userId], references: [id])
-  coffee Coffee? @relation(fields: [coffeeId], references: [id])
   @@unique([userId, coffeeId])
   @@map("coffees_likes")
 }
@@ -120,7 +131,7 @@ model CoffeeLike {
 model Comment {
   id          Int           @id @default(autoincrement())
   createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at")
   description String
   userId      Int           @map("users_id")
   commentLike CommentLike[]
@@ -129,12 +140,12 @@ model Comment {
 }
 
 model CommentLike {
-  id        Int  @id @default(autoincrement())
-  userId    Int? @map("users_id")
-  commentId Int? @map("comments_id")
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("users_id")
+  commentId Int?     @map("comments_id")
+  user      User?    @relation(fields: [userId], references: [id])
+  comment   Comment? @relation(fields: [commentId], references: [id])
 
-  user    User?    @relation(fields: [userId], references: [id])
-  comment Comment? @relation(fields: [commentId], references: [id])
   @@unique([userId, commentId])
   @@map("comments_likes")
 }

@@ -1,8 +1,16 @@
-export const middleWare = (req, res, next) => {
-  //토큰검사
-  next();
+import jwt from 'jsonwebtoken';
 
-  //
-
-  res.json({ ok: false });
+export const authMiddleWare = (req, res, next) => {
+  const {
+    headers: { authorization },
+  } = req;
+  try {
+    if (authorization) {
+      const { id } = jwt.verify(authorization, process.env.SECRET);
+      res.locals.userId = id;
+    }
+    next();
+  } catch (e) {
+    next(e);
+  }
 };

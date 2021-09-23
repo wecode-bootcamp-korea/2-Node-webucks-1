@@ -1,5 +1,10 @@
-import { findManyCategories } from '../models/categoryModel';
-import { findManyProducts, findOneProduct } from '../models/productModel';
+import { findManyCategories } from '../models/caegoryDAO';
+import {
+  createLike,
+  deleteLike,
+  findManyProducts,
+  findOneProduct,
+} from '../models/productDAO';
 
 export const getCategoriesService = async () => {
   return findManyCategories();
@@ -13,4 +18,9 @@ export const getProductService = async (req, next) => {
   return findOneProduct(req, next);
 };
 
-export const likeService = async (req, res, next) => {};
+export const createLikeService = async (req, res, next) => {
+  return createLike(req, res, next);
+};
+export const deleteLikeService = async (req, res, next) => {
+  return deleteLike(req, res, next);
+};

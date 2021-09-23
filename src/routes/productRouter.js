@@ -3,12 +3,17 @@ import {
   getCategories,
   getProduct,
   getProducts,
+  createLike,
+  deleteLike,
 } from '../controllers/productController';
+import { authMiddleWare } from '../middleWares/authMiddleWare';
 
-const productRouter = express();
+const router = express();
 
-productRouter.get('/', getProducts);
-productRouter.get('/:id', getProduct);
-productRouter.get('/categories', getCategories);
+router.get('/', getProducts);
+router.get('/:id', getProduct);
+router.get('/categories', getCategories);
+router.post('/:id/like', authMiddleWare, createLike);
+router.delete('/:id/disLike', authMiddleWare, deleteLike);
 
-export default productRouter;
+export default router;

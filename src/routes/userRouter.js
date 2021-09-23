@@ -4,8 +4,8 @@ import {
   loginControllser,
 } from '../controllers/userController';
 
-const userRouter = express();
-userRouter.post('/join', joinController);
-userRouter.post('/login', loginControllser);
+const router = express();
+router.post('/join', joinController);
+router.post('/login', loginControllser);
 
-export default userRouter;
+export default router;

@@ -1,5 +1,5 @@
 import express from 'express';
 
-const commentRouter = express();
+const router = express();
 
-export default commentRouter;
+export default router;
