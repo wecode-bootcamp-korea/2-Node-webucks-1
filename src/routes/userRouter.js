@@ -2,7 +2,7 @@ import express from 'express';
 import {
   joinController,
   loginControllser,
-} from '../controllers/userController';
+} from '../controllers/userControllers';
 
 const router = express();
 router.post('/join', joinController);

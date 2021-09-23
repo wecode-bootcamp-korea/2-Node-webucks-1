@@ -9,24 +9,29 @@ import {
 export const getCategories = async (req, res) => {
   const data = await getCategoriesService();
   res.json(data);
+  return;
 };
 
 export const getProducts = async (req, res) => {
   const data = await getProductsService();
   res.json(data);
+  return;
 };
 
 export const getProduct = async (req, res, next) => {
   const data = await getProductService(req, next);
   res.json(data);
+  return;
 };
 
 export const createLike = async (req, res, next) => {
   const data = await createLikeService(req, res, next);
   res.json(data);
+  return;
 };
 
 export const deleteLike = async (req, res, next) => {
   const data = await deleteLikeService(req, res, next);
   res.json(data);
+  return;
 };

@@ -60,3 +60,18 @@ export const findUserById = async (id, next) => {
     next(e);
   }
 };
+
+export const auth = async (id, next) => {
+  const me = await findUserById(id, next);
+  if (!me.length) {
+    return {
+      ok: false,
+      error: '로그인 하세요.',
+    };
+  } else {
+    return {
+      ok: true,
+      data: me,
+    };
+  }
+};

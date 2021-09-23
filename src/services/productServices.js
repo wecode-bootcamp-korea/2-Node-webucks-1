@@ -21,6 +21,7 @@ export const getProductService = async (req, next) => {
 export const createLikeService = async (req, res, next) => {
   return createLike(req, res, next);
 };
+
 export const deleteLikeService = async (req, res, next) => {
   return deleteLike(req, res, next);
 };

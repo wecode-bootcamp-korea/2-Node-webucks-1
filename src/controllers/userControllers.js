@@ -16,6 +16,7 @@ export const joinController = async (req, res, next) => {
 
   const result = await joinService(req, res, next);
   res.json(result);
+  return;
 };
 
 export const loginControllser = async (req, res, next) => {
@@ -31,5 +32,6 @@ export const loginControllser = async (req, res, next) => {
   }
 
   const result = await loginService(req, res, next);
-  return res.json(result);
+  res.json(result);
+  return;
 };
