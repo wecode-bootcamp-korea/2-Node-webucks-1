@@ -113,8 +113,8 @@ model NutritionCoffee {
   amount      String
   nutritionId Int       @map("nutritions_id")
   coffeeId    Int       @map("coffees_id")
-  coffee      Coffee    @relation(fields: [coffeeId], references: [id])
-  nutrition   Nutrition @relation(fields: [nutritionId], references: [id])
+  coffee      Coffee    @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
+  nutrition   Nutrition @relation(fields: [nutritionId], references: [id], onDelete: Cascade)
 
   @@map("nutrition_coffee")
 }
@@ -123,8 +123,8 @@ model CoffeeLike {
   id       Int     @id @default(autoincrement())
   userId   Int?    @map("users_id")
   coffeeId Int?    @map("coffees_id")
-  user     User?   @relation(fields: [userId], references: [id])
-  coffee   Coffee? @relation(fields: [coffeeId], references: [id])
+  user     User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  coffee   Coffee? @relation(fields: [coffeeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, coffeeId])
   @@map("coffees_likes")
@@ -137,9 +137,8 @@ model Comment {
   description String
   userId      Int           @map("users_id")
   commentLike CommentLike[]
+  reComment   ReComment[]
 
-
-  reComment ReComment[]
   @@map("comments")
 }
 
@@ -150,9 +149,9 @@ model ReComment {
   description String
 
   commentId Int     @map("comments_id")
-  userId    Int     @map("users_id")
-  comment   Comment @relation(fields: [commentId], references: [id])
-  user      User    @relation(fields: [userId], references: [id])
+  userId    Int?    @map("users_id")
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("re_comments")
 }
@@ -161,8 +160,8 @@ model CommentLike {
   id        Int      @id @default(autoincrement())
   userId    Int?     @map("users_id")
   commentId Int?     @map("comments_id")
-  user      User?    @relation(fields: [userId], references: [id])
-  comment   Comment? @relation(fields: [commentId], references: [id])
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   @@unique([userId, commentId])
   @@map("comments_likes")

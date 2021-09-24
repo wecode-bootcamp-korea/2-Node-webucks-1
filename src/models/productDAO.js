@@ -1,6 +1,4 @@
 import client from '.';
-import { isItemExist } from '../utils';
-import { findUserById } from './userDAO';
 
 export const findManyProducts = async () => {
   return client.$queryRaw`
@@ -8,18 +6,19 @@ export const findManyProducts = async () => {
     c.id,
     c.korean_name,
     c.english_name,
-    c.description
-  FROM coffees c;
+    c.description,
+    ct.name
+  FROM coffees c
+  JOIN categories ct ON ct.id=c.categories_id
+  ORDER BY
+  ct.id ASC,
+  c.korean_name ASC;
   `;
 };
 
-export const findOneProduct = async (req, next) => {
-  const {
-    params: { id },
-  } = req;
-
+export const findOneProduct = async (id, next) => {
   try {
-    const data = await client.$queryRaw`
+    return client.$queryRaw`
     SELECT
       c.id,
       c.korean_name,
@@ -40,52 +39,12 @@ export const findOneProduct = async (req, next) => {
     LEFT OUTER JOIN nutritions n ON n.id=nc.nutritions_id
     WHERE c.id=${id};
     `;
-
-    const datas = {
-      size: {},
-      image: {},
-      allergies: [],
-      nutrients: [],
-    };
-
-    for (let item of data) {
-      if (item.allergy && !datas.allergies.includes(item.allergy)) {
-        datas.allergies.push(item.allergy);
-      }
-
-      if (Number(item.amount)) {
-        const isExist = !!datas.nutrients.find(
-          jtem => jtem.nutrient === item.nutrient
-        );
-
-        if (!isExist) {
-          const nutrient = { nutrient: item.nutrient, amount: item.amount };
-          datas.nutrients.push(nutrient);
-        }
-      }
-      datas.size.size = item.name;
-      datas.size.amount = item.size;
-      datas.image.url = item.src;
-    }
-
-    for (let key in datas) {
-      if (isItemExist(datas[key])) {
-        data[0][key] = datas[key];
-      }
-    }
-
-    delete data[0].name;
-    delete data[0].amount;
-    delete data[0].src;
-    delete data[0].allergy;
-    delete data[0].nutrient;
-    return data[0];
   } catch (e) {
     next(e);
   }
 };
 
-const findProductById = async (id, next) => {
+export const findProductById = async (id, next) => {
   try {
     return client.$queryRaw`
     SELECT c.id
@@ -98,46 +57,16 @@ const findProductById = async (id, next) => {
   }
 };
 
-export const createLike = async (req, res, next) => {
-  const { locals } = res;
-
-  const {
-    params: { id: coffeeId },
-  } = req;
-
-  if (!('userId' in locals)) {
-    return {
-      ok: false,
-      error: '로그인 해야 이용할 수 있는 기능입니다.',
-    };
-  }
-  const userExist = await findUserById(locals.userId, next);
-  const { id: userId } = userExist[0];
-  if (!userId) {
-    return {
-      ok: false,
-      error: '존재하지 않는 계정입니다.',
-    };
-  }
-
+export const createLike = async (userId, coffeeId, next) => {
   try {
-    const isExist = await findProductById(coffeeId, next);
-
-    if (!isExist.length) {
-      return {
-        ok: false,
-        error: '존재하지 않는 상품입니다.',
-      };
-    }
-
     await client.$queryRaw`
-      INSERT INTO
-      coffees_likes(
-        users_id,
-        coffees_id)
-      VALUES(
-        ${userId},
-        ${coffeeId});
+    INSERT INTO
+    coffees_likes(
+      users_id,
+      coffees_id)
+    VALUES(
+      ${userId},
+      ${coffeeId});
     `;
 
     return {
@@ -147,43 +76,9 @@ export const createLike = async (req, res, next) => {
     next(e);
   }
 };
-export const deleteLike = async (req, res, next) => {
-  const { locals } = res;
 
-  const {
-    params: { id: coffeeId },
-  } = req;
-
-  if (!('userId' in locals)) {
-    return {
-      ok: false,
-      error: '로그인 해야 이용할 수 있는 기능입니다.',
-    };
-  }
-
-  const userExist = await findUserById(locals.userId, next);
-  const { id: userId } = userExist[0];
-  if (!userId) {
-    return {
-      ok: false,
-      error: '로그인 하세요.',
-    };
-  }
-
-  const isExist = await findLikeByIds(userId, coffeeId);
-  if (!isExist.ok) {
-    return isExist;
-  }
-
+export const deleteLike = async (userId, coffeeId, next) => {
   try {
-    const isExist = await findProductById(coffeeId, next);
-
-    if (!isExist.length) {
-      return {
-        ok: false,
-        error: '존재하지 않는 상품입니다.',
-      };
-    }
     await client.$queryRaw`
       DELETE 
       FROM coffees_likes cl
@@ -201,17 +96,17 @@ export const deleteLike = async (req, res, next) => {
   }
 };
 
-export const findLikeByIds = async (userId, coffeeId) => {
-  const isExist = await client.$queryRaw`
+export const findLikeByIds = async (userId, coffeeId, next) => {
+  try {
+    return client.$queryRaw`
     SELECT l.id 
     FROM coffees_likes l
     WHERE
-        users_id=${userId}
+        l.users_id=${userId}
       AND
-        coffees_id=${coffeeId};
+        l.coffees_id=${coffeeId};
   `;
-
-  return !isExist.length
-    ? { ok: false, error: '수정권한이 없습니다.' }
-    : { ok: true };
+  } catch (e) {
+    next(e);
+  }
 };

@@ -1,5 +1,4 @@
 import app from './app';
-import { getCategory, getCoffeeDatas } from './getData';
 import client from './models';
 const PORT = process.env.PORT;
 

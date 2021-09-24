@@ -1,3 +1,5 @@
+import { json } from 'express';
+import { ERRORS } from '../constances';
 import {
   createCommentLikeService,
   createCommentService,
@@ -17,14 +19,16 @@ export const createComment = async (req, res, next) => {
   } = req;
 
   if (!description) {
-    return { ok: false, error: '올바른 값을 입력하세요.' };
+    res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
+    return;
   }
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 해야 이용할 수 있는 기능입니다.',
-    };
+      error: ERRORS.UNAUTH,
+    });
+    return;
   }
 
   const data = await createCommentService(userId, description, next);
@@ -43,14 +47,16 @@ export const updateComment = async (req, res, next) => {
   } = req;
 
   if (!commentId || !description) {
-    return { ok: false, error: '올바른 값을 입력하세요.' };
+    res.status(400).json({ ok: false, error: ERRORS.INVALID });
+    return;
   }
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 해야 이용할 수 있는 기능입니다.',
-    };
+      error: ERRORS.UNAUTH,
+    });
+    return;
   }
   const data = await updateCommentService(userId, commentId, description, next);
   res.json(data);
@@ -67,17 +73,19 @@ export const deleteComment = async (req, res, next) => {
   } = req;
 
   if (!commentId) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '댓글이 존재하지 않습니다..',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
+    return;
   }
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 하세요.',
-    };
+      error: ERRORS.UNAUTH,
+    });
+    return;
   }
 
   const data = await deleteCommentService(userId, commentId, next);
@@ -96,17 +104,18 @@ export const createRecomment = async (req, res, next) => {
   } = req;
 
   if (!commentId) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '존재하지 않는 댓글 입니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
+    return;
   }
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인하세요.',
-    };
+      error: ERRORS.UNAUTH,
+    });
   }
 
   const data = await createRecommentService(
@@ -129,17 +138,17 @@ export const createCommentlike = async (req, res, next) => {
   } = req;
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 하세요.',
-    };
+      error: ERRORS.UNAUTH,
+    });
   }
 
   if (!commentId) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '존재하지 않는 댓글 입니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
   }
 
   const data = await createCommentLikeService(userId, commentId, next);
@@ -156,17 +165,17 @@ export const deleteCommentLike = async (req, res, next) => {
   } = req;
 
   if (!userId) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 하세요',
-    };
+      error: ERRORS.UNAUTH,
+    });
   }
 
   if (!commentId) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '댓글이 존재하지 않습니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
   }
 
   const data = await deleteCommentLikeService(userId, commentId, next);

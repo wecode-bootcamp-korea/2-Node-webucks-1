@@ -14,6 +14,6 @@ router.get('/', getProducts);
 router.get('/:id', getProduct);
 router.get('/categories', getCategories);
 router.post('/:id/like', authMiddleWare, createLike);
-router.delete('/:id/disLike', authMiddleWare, deleteLike);
+router.delete('/:id/dislike', authMiddleWare, deleteLike);
 
 export default router;

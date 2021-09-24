@@ -29,10 +29,10 @@ export const updateCommentService = async (
 
   const isCommentExist = await findCommentByIds(userId, commentId, next);
   if (!isCommentExist.length) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '존재하지 않는 댓글입니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
   }
   return updateComment(commentId, description, next);
 };
@@ -40,17 +40,17 @@ export const updateCommentService = async (
 export const deleteCommentService = async (userId, commentId, next) => {
   const isAuth = await auth(userId, next);
   if (!isAuth.ok) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 하세요.',
-    };
+      error: ERRORS.UNAUTH,
+    });
   }
   const commentExist = await findCommentByIds(userId, commentId, next);
   if (!commentExist.length) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '존재하지 않는 댓글 입니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
   }
 
   return deleteComment(commentId, next);
@@ -65,10 +65,10 @@ export const createRecommentService = async (
   const isAuth = await auth(userId, next);
 
   if (!isAuth.ok) {
-    return {
-      ok: 'false',
-      error: '로그인 하세요.',
-    };
+    res.status(403).json({
+      ok: false,
+      error: ERRORS.UNAUTH,
+    });
   }
 
   return createRecomment(userId, commentId, description, next);
@@ -78,19 +78,19 @@ export const createCommentLikeService = async (userId, commentId, next) => {
   const isAuth = await auth(userId, next);
 
   if (!isAuth.ok) {
-    return {
+    res.status(403).json({
       ok: false,
-      error: '로그인 하세요;',
-    };
+      error: ERRORS.UNAUTH,
+    });
   }
 
   const isCommentExist = await findCommentByIds(userId, commentId, next);
 
   if (!isCommentExist.length) {
-    return {
+    res.status(404).json({
       ok: false,
-      error: '댓글이 존재하지 않습니다.',
-    };
+      error: ERRORS.NOITEM('댓글이'),
+    });
   }
 
   return createCommentlike(userId, commentId, next);

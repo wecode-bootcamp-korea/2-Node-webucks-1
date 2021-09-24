@@ -1,37 +1,31 @@
 import { createUser, findUserByEmail } from '../models/userDAO';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import { ERRORS } from '../constances';
 
-export const joinService = async (req, res, next) => {
-  const {
-    body: { email, password },
-  } = req;
-
-  const isExist = await findUserByEmail(next, email);
+export const joinService = async (email, password, next) => {
+  const isExist = await findUserByEmail(email, next);
 
   if (isExist.length) {
     return {
       ok: false,
-      error: '같은 이메일로 가입한 유저가 존재합니다.',
+      error: ERRORS.EXIST,
     };
   }
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    return createUser(req, next, hashedPassword);
+    return createUser(email, hashedPassword, next);
   } catch (e) {
     next(e);
   }
 };
 
-export const loginService = async (req, res, next) => {
-  const {
-    body: { email, password },
-  } = req;
-  const existUser = await findUserByEmail(next, email);
+export const loginService = async (email, password, next) => {
+  const existUser = await findUserByEmail(email, next);
   if (!existUser.length) {
     res.status(400).json({
       ok: false,
-      error: '이메일이나 비밀번호가 올바르지 않습니다.',
+      error: ERRORS.INVALID,
     });
     return;
   }
@@ -41,7 +35,7 @@ export const loginService = async (req, res, next) => {
     if (!isPassCorrect) {
       res.status(400).json({
         ok: false,
-        error: '이메일이나 비밀번호가 올바르지 않습니다.',
+        error: ERRORS.INVALID,
       });
       return;
     }

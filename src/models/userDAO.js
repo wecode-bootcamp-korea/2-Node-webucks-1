@@ -1,6 +1,7 @@
 import client from '.';
+import { ERRORS } from '../constances';
 
-export const findUserByEmail = async (next, email) => {
+export const findUserByEmail = async (email, next) => {
   try {
     return client.$queryRaw`
     SELECT * 
@@ -14,11 +15,7 @@ export const findUserByEmail = async (next, email) => {
   }
 };
 
-export const createUser = async (req, next, password) => {
-  const {
-    body: { email },
-  } = req;
-
+export const createUser = async (email, password, next) => {
   try {
     await client.$queryRaw`
     INSERT INTO 
@@ -32,7 +29,7 @@ export const createUser = async (req, next, password) => {
       ${new Date()});
     `;
 
-    const data = await findUserByEmail(next, email);
+    const data = await findUserByEmail(email, next);
 
     if (data.length) {
       delete data[0].password;
@@ -66,7 +63,7 @@ export const auth = async (id, next) => {
   if (!me.length) {
     return {
       ok: false,
-      error: '로그인 하세요.',
+      error: ERRORS.UNAUTH,
     };
   } else {
     return {
