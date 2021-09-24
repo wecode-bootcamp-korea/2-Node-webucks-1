@@ -1,23 +1,41 @@
 import { ERRORS } from '../constances';
 import { findManyCategories } from '../models/caegoryDAO';
 import {
+  authFindManyProducts,
   createLike,
   deleteLike,
   findLikeByIds,
-  findManyProducts,
   findOneProduct,
   findProductById,
+  unAuthFindManyProducts,
 } from '../models/productDAO';
-import { findUserById } from '../models/userDAO';
-import { isItemExist, offsetPagnation } from '../utils';
+import { auth, findUserById } from '../models/userDAO';
+import {
+  addAmILike,
+  changeKeyName,
+  isItemExist,
+  offsetPagnation,
+} from '../utils';
 
 export const getCategoriesService = async () => {
   return findManyCategories();
 };
 
-export const getProductsService = async offset => {
-  const data = await findManyProducts();
-  if (!data.length) return data;
+export const getProductsService = async (offset, userId) => {
+  if (userId) {
+    const isAuth = await auth(userId);
+    if (isAuth.ok) {
+      const data = (await authFindManyProducts()) || [];
+      addAmILike(data, userId);
+      changeKeyName(data, 'src', 'image');
+      changeKeyName(data, 'key', 'categoryId');
+      return offsetPagnation(data, 12, offset);
+    }
+  }
+
+  const data = (await unAuthFindManyProducts()) || [];
+  changeKeyName(data, 'src', 'image');
+  changeKeyName(data, 'key', 'categoryId');
   return offsetPagnation(data, 12, offset);
 };
 

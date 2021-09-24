@@ -13,12 +13,16 @@ export const getCategories = async (req, res) => {
   return;
 };
 
-export const getProducts = async (req, res) => {
+export const getProducts = async (req, res, next) => {
+  const {
+    locals: { userId },
+  } = res;
+
   const {
     query: { offset },
   } = req;
 
-  const data = await getProductsService(offset);
+  const data = await getProductsService(offset, userId);
   res.json(data);
   return;
 };

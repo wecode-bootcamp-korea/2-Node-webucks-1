@@ -1,17 +1,39 @@
 import client from '.';
 
-export const findManyProducts = async () => {
+export const authFindManyProducts = async => {
   return client.$queryRaw`
   SELECT 
     c.id,
     c.korean_name,
     c.english_name,
     c.description,
-    ct.name
+    ct.key,
+    i.src,
+    cl.users_id
   FROM coffees c
-  JOIN categories ct ON ct.id=c.categories_id
+  JOIN categories ct ON ct.key=c.categories_id
+  JOIN images i ON i.coffees_id=c.id
+  LEFT OUTER JOIN coffees_likes cl ON cl.coffees_id=c.id
   ORDER BY
-  ct.id ASC,
+  ct.key ASC,
+  c.korean_name ASC;
+  `;
+};
+
+export const unAuthFindManyProducts = async => {
+  return client.$queryRaw`
+  SELECT 
+    c.id,
+    c.korean_name,
+    c.english_name,
+    c.description,
+    ct.key,
+    i.src
+  FROM coffees c
+  JOIN categories ct ON ct.key=c.categories_id
+  JOIN images i ON i.coffees_id=c.id
+  ORDER BY
+  ct.key ASC,
   c.korean_name ASC;
   `;
 };

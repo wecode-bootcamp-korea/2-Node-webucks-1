@@ -11,7 +11,7 @@ generator client {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement()) @map("key")
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
   name      String   @unique

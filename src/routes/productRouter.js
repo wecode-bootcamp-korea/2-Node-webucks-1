@@ -10,9 +10,9 @@ import { authMiddleWare } from '../middleWares/authMiddleWare';
 
 const router = express();
 
-router.get('/', getProducts);
-router.get('/:id', getProduct);
+router.get('/', authMiddleWare, getProducts);
 router.get('/categories', getCategories);
+router.get('/:id', getProduct);
 router.post('/:id/like', authMiddleWare, createLike);
 router.delete('/:id/dislike', authMiddleWare, deleteLike);
 

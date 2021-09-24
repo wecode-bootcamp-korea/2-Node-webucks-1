@@ -50,3 +50,24 @@ export const offsetPagnation = (array, limit, offset) => {
 
   return newArray;
 };
+
+export const changeKeyName = (array, oldKey, newKey) => {
+  for (let item of array) {
+    item[newKey] = item[oldKey];
+    delete item[oldKey];
+  }
+};
+
+export const addAmILike = (array, userId) => {
+  const newObj = {};
+
+  for (let item of array) {
+    if (newObj[item.id] === undefined) newObj[item.id] = item;
+    if (newObj[item.id].isLike === undefined) newObj[item.id].isLike = 0;
+    if (item.users_id === userId) newObj[item.id].isLike += 1;
+  }
+
+  for (let key in newObj) {
+    newObj[key].isLike = !!newObj[key].isLike;
+  }
+};
