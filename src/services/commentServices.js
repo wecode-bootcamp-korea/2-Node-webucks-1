@@ -9,7 +9,6 @@ import {
   updateComment,
 } from '../models/commentDAO';
 import { auth } from '../models/userDAO';
-import { addAmILike } from '../utils';
 
 export const createCommentService = async (userId, description, next) => {
   const isAuth = await auth(userId, next);
@@ -21,6 +20,12 @@ export const createCommentService = async (userId, description, next) => {
 export const getCommentsService = async (coffeeId, userId, next) => {
   const comments = await findCommentsByCoffeeId(coffeeId, next);
 
+  if (userId) {
+    isAuth = await auth(userId, next);
+    if (isAuth.ok) {
+    }
+  }
+  //일단 크리에이트 먼저 하고 돌아온다
   //amILike 와 isMine 이 추가
 
   for (let comment of comments) {

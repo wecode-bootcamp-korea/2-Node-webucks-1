@@ -36,7 +36,7 @@ export const getProduct = async (req, res, next) => {
     locals: { userId },
   } = res;
 
-  if (id === undefined || id === null) {
+  if (id === 'undefined') {
     res.status(404).json({
       ok: false,
       error: ERRORS.NOPARAMS,
@@ -62,7 +62,7 @@ export const createLike = async (req, res, next) => {
     });
   }
 
-  if (!coffeeId) {
+  if (coffeeId === 'undefined') {
     res.status(404).json({
       ok: false,
       error: ERRORS.NOPARAMS,
@@ -88,7 +88,7 @@ export const deleteLike = async (req, res, next) => {
     });
   }
 
-  if (!coffeeId) {
+  if (coffeeId === 'undefined') {
     res.status(404).json({
       ok: false,
       error: ERRORS.NOPARAMS,
