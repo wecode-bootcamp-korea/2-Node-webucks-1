@@ -32,6 +32,10 @@ export const getProduct = async (req, res, next) => {
     params: { id },
   } = req;
 
+  const {
+    locals: { userId },
+  } = res;
+
   if (id === undefined || id === null) {
     res.status(404).json({
       ok: false,
@@ -40,7 +44,7 @@ export const getProduct = async (req, res, next) => {
     return;
   }
 
-  const data = await getProductService(id, next);
+  const data = await getProductService(id, userId, next);
   res.json(data);
   return;
 };
@@ -51,7 +55,6 @@ export const createLike = async (req, res, next) => {
   const {
     params: { id: coffeeId },
   } = req;
-
   if (!locals.userId) {
     res.status(403).json({
       ok: false,

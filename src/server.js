@@ -10,4 +10,5 @@ const start = async () => {
     client.$disconnect();
   }
 };
+
 start();

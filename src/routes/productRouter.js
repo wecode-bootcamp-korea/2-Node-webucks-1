@@ -12,7 +12,7 @@ const router = express();
 
 router.get('/', authMiddleWare, getProducts);
 router.get('/categories', getCategories);
-router.get('/:id', getProduct);
+router.get('/:id', authMiddleWare, getProduct);
 router.post('/:id/like', authMiddleWare, createLike);
 router.delete('/:id/dislike', authMiddleWare, deleteLike);
 

@@ -1,5 +1,26 @@
 import client from './index';
 
+export const findCommentsByCoffeeId = async (coffeeId, next) => {
+  try {
+    return client.$queryRaw`
+    SELECT 
+      c.id,
+      c.created_at,
+      c.description,
+      c.users_id,
+    FROM commens c
+      LEFT OUTER JOIN comments_likes cl ON cl.comments_id=c.id
+      JOIN users u ON u.id=c.users_id
+    WHERE
+      c.coffees_id=${coffeeId}
+    ORDER BY
+      createdAt ASC;
+    `;
+  } catch (e) {
+    next(e);
+  }
+};
+
 export const createComment = async (userId, description, next) => {
   try {
     await client.$queryRaw`
@@ -47,9 +68,9 @@ export const findCommentByIds = async (userId, commentId, next) => {
     SELECT *
     FROM comments c
     WHERE 
-      users_id=${userId}
-    AND
-      id=${commentId}
+        users_id=${userId}
+      AND
+        id=${commentId}
   `;
   } catch (e) {
     next(e);
@@ -98,13 +119,11 @@ export const createRecomment = async (userId, commentId, description, next) => {
       re_comments(
         description,
         users_id,
-        comments_id
-      )
+        comments_id)
     VALUES(
       ${description},
       ${userId},
-      ${commentId}
-    );
+      ${commentId});
     `;
 
     const data = await findRecommentByCreatedAt(userId, next);
@@ -128,8 +147,7 @@ export const findRecommentByCreatedAt = async (userId, next) => {
       WHERE
         users_id=${userId}
       ORDER BY
-        created_at
-      DESC;
+        created_at DESC;
     `;
   } catch (e) {
     next(e);
@@ -146,8 +164,7 @@ export const createCommentlike = async (userId, commentId, next) => {
       )
       VALUES(
         ${userId},
-        ${commentId}
-      );
+        ${commentId});
     `;
 
     return {
@@ -187,9 +204,9 @@ export const findCommentLikeByIds = async (userId, commentId, next) => {
     SELECT l.id
     FROM comments_likes l
     WHERE
-      comments_id=${commentId}
-        AND
-      users_id=${userId};
+        comments_id=${commentId}
+      AND
+        users_id=${userId};
     `;
 
     if (!isExist.length) {

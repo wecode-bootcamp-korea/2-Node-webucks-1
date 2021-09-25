@@ -39,18 +39,20 @@ export const getProductsService = async (offset, userId) => {
   }
 
   const data = (await unAuthFindManyProducts()) || [];
+
   return changeKeyNameAndPagnation(data, offset);
 };
 
-export const getProductService = async (id, next) => {
+export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
-  if (!data.length) return data;
 
   const datas = {
     size: {},
     image: {},
     allergies: [],
-    nutrients: [],
+    nutrients1: [],
+    nutrients2: [],
+    nutrients3: [],
   };
 
   for (let item of data) {
@@ -59,13 +61,28 @@ export const getProductService = async (id, next) => {
     }
 
     if (Number(item.amount)) {
-      const isExist = !!datas.nutrients.find(
+      const isNutrient1Exist = !!datas.nutrients1.find(
         jtem => jtem.nutrient === item.nutrient
       );
 
-      if (!isExist) {
+      const isNutrient2Exist = !!datas.nutrients2.find(
+        jtem => jtem.nutrient === item.nutrient
+      );
+
+      const isNutrient3Exist = !!datas.nutrients3.find(
+        jtem => jtem.nutrient === item.nutrient
+      );
+
+      if (!isNutrient1Exist && !isNutrient2Exist && !isNutrient3Exist) {
         const nutrient = { nutrient: item.nutrient, amount: item.amount };
-        datas.nutrients.push(nutrient);
+
+        if (datas.nutrients1.length < 2) {
+          datas.nutrients1.push(nutrient);
+        } else if (datas.nutrients2.length < 2) {
+          datas.nutrients2.push(nutrient);
+        } else {
+          datas.nutrients3.push(nutrient);
+        }
       }
     }
     datas.size.size = item.name;
@@ -84,6 +101,14 @@ export const getProductService = async (id, next) => {
   delete data[0].src;
   delete data[0].allergy;
   delete data[0].nutrient;
+
+  if (userId) {
+    const isAuth = await auth(userId, next);
+    if (isAuth.ok) {
+      const isLikeExist = await findLikeByIds(userId, data[0].id, next);
+      data[0].isLike = !!isLikeExist.length;
+    }
+  }
   return data[0];
 };
 

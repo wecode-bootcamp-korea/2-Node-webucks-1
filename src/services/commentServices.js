@@ -5,15 +5,27 @@ import {
   deleteComment,
   deleteCommentLike,
   findCommentByIds,
+  findCommentsByCoffeeId,
   updateComment,
 } from '../models/commentDAO';
 import { auth } from '../models/userDAO';
+import { addAmILike } from '../utils';
 
 export const createCommentService = async (userId, description, next) => {
   const isAuth = await auth(userId, next);
   return !isAuth.ok
     ? auth(userId, next)
     : await createComment(userId, description, next);
+};
+
+export const getCommentsService = async (coffeeId, userId, next) => {
+  const comments = await findCommentsByCoffeeId(coffeeId, next);
+
+  //amILike 와 isMine 이 추가
+
+  for (let comment of comments) {
+    comment.isMine = comment.users_id === userId;
+  }
 };
 
 export const updateCommentService = async (

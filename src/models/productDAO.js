@@ -5,8 +5,6 @@ export const authFindManyProducts = async => {
   SELECT 
     c.id,
     c.korean_name,
-    c.english_name,
-    c.description,
     ct.key,
     i.src,
     cl.users_id
@@ -15,8 +13,8 @@ export const authFindManyProducts = async => {
   JOIN images i ON i.coffees_id=c.id
   LEFT OUTER JOIN coffees_likes cl ON cl.coffees_id=c.id
   ORDER BY
-  ct.key ASC,
-  c.korean_name ASC;
+    ct.key ASC,
+    c.korean_name ASC;
   `;
 };
 
@@ -25,16 +23,14 @@ export const unAuthFindManyProducts = async => {
   SELECT 
     c.id,
     c.korean_name,
-    c.english_name,
-    c.description,
     ct.key,
     i.src
   FROM coffees c
   JOIN categories ct ON ct.key=c.categories_id
   JOIN images i ON i.coffees_id=c.id
   ORDER BY
-  ct.key ASC,
-  c.korean_name ASC;
+    ct.key ASC,
+    c.korean_name ASC;
   `;
 };
 
@@ -51,7 +47,8 @@ export const findOneProduct = async (id, next) => {
       i.src,
       a.allergy,
       n.nutrient,
-      nc.amount
+      nc.amount,
+      n.id
     FROM coffees c
     LEFT OUTER JOIN sizes s ON c.sizes_id=s.id
     LEFT OUTER JOIN images i ON c.id=i.coffees_id
@@ -59,7 +56,8 @@ export const findOneProduct = async (id, next) => {
     LEFT OUTER JOIN allergies a ON a.id=ac.allergies_id
     LEFT OUTER JOIN nutrition_coffee nc ON nc.coffees_id=c.id
     LEFT OUTER JOIN nutritions n ON n.id=nc.nutritions_id
-    WHERE c.id=${id};
+    WHERE 
+      c.id=${id};
     `;
   } catch (e) {
     next(e);
@@ -104,7 +102,7 @@ export const deleteLike = async (userId, coffeeId, next) => {
     await client.$queryRaw`
       DELETE 
       FROM coffees_likes cl
-      where
+      WHERE
           cl.users_id=${userId}
         AND
           cl.coffees_id=${coffeeId};
