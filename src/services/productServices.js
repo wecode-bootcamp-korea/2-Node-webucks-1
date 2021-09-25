@@ -32,6 +32,7 @@ export const getProductsService = async (offset, userId) => {
       return data;
     }
   }
+
   const data = (await unAuthFindManyProducts(offset)) || [];
   changeKeyNameAndPagnation(data);
   return data;
@@ -39,7 +40,6 @@ export const getProductsService = async (offset, userId) => {
 
 export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
-
   const datas = {
     size: {},
     image: {},

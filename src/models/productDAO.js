@@ -26,14 +26,22 @@ export const authFindManyProducts = async offset => {
   `;
 };
 
-export const unAuthFindManyProducts = async => {
+export const unAuthFindManyProducts = async offset => {
   return client.$queryRaw`
   SELECT 
     c.id,
     c.korean_name,
     ct.key,
     i.src
-  FROM coffees c
+  FROM(
+    SELECT 
+      c.id
+    FROM coffees c
+    ORDER BY
+      c.id ASC
+    LIMIT ${offset}, 20
+  )q
+  JOIN coffees c ON c.id=q.id
   JOIN categories ct ON ct.key=c.categories_id
   JOIN images i ON i.coffees_id=c.id
   ORDER BY
@@ -58,12 +66,12 @@ export const findOneProduct = async (id, next) => {
       nc.amount,
       n.id
     FROM coffees c
-    LEFT OUTER JOIN sizes s ON c.sizes_id=s.id
-    LEFT OUTER JOIN images i ON c.id=i.coffees_id
-    LEFT OUTER JOIN allergy_coffee ac ON ac.coffees_id=c.id
-    LEFT OUTER JOIN allergies a ON a.id=ac.allergies_id
-    LEFT OUTER JOIN nutrition_coffee nc ON nc.coffees_id=c.id
-    LEFT OUTER JOIN nutritions n ON n.id=nc.nutritions_id
+       JOIN sizes s ON c.sizes_id=s.id
+       JOIN images i ON c.id=i.coffees_id
+       JOIN allergy_coffee ac ON ac.coffees_id=c.id
+       JOIN allergies a ON a.id=ac.allergies_id
+       JOIN nutrition_coffee nc ON nc.coffees_id=c.id
+       JOIN nutritions n ON n.id=nc.nutritions_id
     WHERE 
       c.id=${id};
     `;
