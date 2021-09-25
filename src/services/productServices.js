@@ -21,22 +21,25 @@ export const getCategoriesService = async () => {
   return findManyCategories();
 };
 
+const changeKeyNameAndPagnation = (data, offset) => {
+  changeKeyName(data, 'src', 'image');
+  changeKeyName(data, 'key', 'categoryId');
+  return offsetPagnation(data, 12, offset);
+};
+
 export const getProductsService = async (offset, userId) => {
   if (userId) {
     const isAuth = await auth(userId);
+
     if (isAuth.ok) {
-      const data = (await authFindManyProducts()) || [];
-      addAmILike(data, userId);
-      changeKeyName(data, 'src', 'image');
-      changeKeyName(data, 'key', 'categoryId');
-      return offsetPagnation(data, 12, offset);
+      let data = (await authFindManyProducts()) || [];
+      data = addAmILike(data, userId);
+      return changeKeyNameAndPagnation(data, offset);
     }
   }
 
   const data = (await unAuthFindManyProducts()) || [];
-  changeKeyName(data, 'src', 'image');
-  changeKeyName(data, 'key', 'categoryId');
-  return offsetPagnation(data, 12, offset);
+  return changeKeyNameAndPagnation(data, offset);
 };
 
 export const getProductService = async (id, next) => {

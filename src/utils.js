@@ -60,6 +60,7 @@ export const changeKeyName = (array, oldKey, newKey) => {
 
 export const addAmILike = (array, userId) => {
   const newObj = {};
+  const newArray = [];
 
   for (let item of array) {
     if (newObj[item.id] === undefined) newObj[item.id] = item;
@@ -69,5 +70,7 @@ export const addAmILike = (array, userId) => {
 
   for (let key in newObj) {
     newObj[key].isLike = !!newObj[key].isLike;
+    newArray.push(newObj[key]);
   }
+  return newArray;
 };
