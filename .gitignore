@@ -8,7 +8,7 @@ lerna-debug.log*
 .pnpm-debug.log*
 
 # private
-src/getData.js
+getData.js
 dbname.sql
 
 

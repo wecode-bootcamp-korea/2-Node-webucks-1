@@ -32,25 +32,6 @@ export const isItemExist = item => {
   }
 };
 
-export const offsetPagnation = (array, limit, offset) => {
-  if (!offset) return array.slice(0, limit);
-
-  const newArray = [];
-  let offsetIndex = 0;
-  for (let i = 0; i < array.length; i++) {
-    if (newArray.length == limit) break;
-
-    if (array[i].id == offset) {
-      offsetIndex = i;
-      continue;
-    }
-
-    if (offsetIndex) newArray.push(array[i]);
-  }
-
-  return newArray;
-};
-
 export const changeKeyName = (array, oldKey, newKey) => {
   for (let item of array) {
     item[newKey] = item[oldKey];

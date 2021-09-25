@@ -1,6 +1,6 @@
 import client from '.';
 
-export const authFindManyProducts = async => {
+export const authFindManyProducts = async offset => {
   return client.$queryRaw`
   SELECT 
     c.id,
@@ -8,7 +8,15 @@ export const authFindManyProducts = async => {
     ct.key,
     i.src,
     cl.users_id
-  FROM coffees c
+  FROM(
+    SELECT 
+      c.id
+    FROM coffees c
+    ORDER BY
+      c.id ASC
+    LIMIT ${offset}, 20
+  )q
+  JOIN coffees c ON c.id=q.id
   JOIN categories ct ON ct.key=c.categories_id
   JOIN images i ON i.coffees_id=c.id
   LEFT OUTER JOIN coffees_likes cl ON cl.coffees_id=c.id

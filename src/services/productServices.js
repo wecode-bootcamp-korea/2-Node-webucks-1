@@ -10,21 +10,15 @@ import {
   unAuthFindManyProducts,
 } from '../models/productDAO';
 import { auth, findUserById } from '../models/userDAO';
-import {
-  addAmILike,
-  changeKeyName,
-  isItemExist,
-  offsetPagnation,
-} from '../utils';
+import { addAmILike, changeKeyName, isItemExist } from '../utils';
 
 export const getCategoriesService = async () => {
   return findManyCategories();
 };
 
-const changeKeyNameAndPagnation = (data, offset) => {
+const changeKeyNameAndPagnation = data => {
   changeKeyName(data, 'src', 'image');
   changeKeyName(data, 'key', 'categoryId');
-  return offsetPagnation(data, 12, offset);
 };
 
 export const getProductsService = async (offset, userId) => {
@@ -32,15 +26,15 @@ export const getProductsService = async (offset, userId) => {
     const isAuth = await auth(userId);
 
     if (isAuth.ok) {
-      let data = (await authFindManyProducts()) || [];
+      let data = (await authFindManyProducts(offset)) || [];
       data = addAmILike(data, userId);
-      return changeKeyNameAndPagnation(data, offset);
+      changeKeyNameAndPagnation(data);
+      return data;
     }
   }
-
-  const data = (await unAuthFindManyProducts()) || [];
-
-  return changeKeyNameAndPagnation(data, offset);
+  const data = (await unAuthFindManyProducts(offset)) || [];
+  changeKeyNameAndPagnation(data);
+  return data;
 };
 
 export const getProductService = async (id, userId, next) => {
