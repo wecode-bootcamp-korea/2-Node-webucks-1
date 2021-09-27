@@ -68,7 +68,8 @@ export const findOneProduct = async (id, next) => {
       co.description,
       co.id coid,
       co.description,
-      u.nick_name
+      u.nick_name,
+      cls.users_id clus
     FROM coffees c
       JOIN sizes s ON c.sizes_id=s.id
       JOIN images i ON c.id=i.coffees_id
@@ -77,7 +78,8 @@ export const findOneProduct = async (id, next) => {
       LEFT OUTER JOIN allergy_coffee ac ON ac.coffees_id=c.id
       LEFT OUTER JOIN allergies a ON a.id=ac.allergies_id
       LEFT OUTER JOIN comments co ON co.coffees_id=c.id
-      LEFT OUTER JOIN users u on u.id=co.users_id 
+      LEFT OUTER JOIN users u ON u.id=co.users_id 
+      LEFT OUTER JOIN comments_likes cls ON cls.comments_id=co.id
     WHERE 
       c.id=${id};
     `;

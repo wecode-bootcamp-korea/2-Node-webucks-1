@@ -40,6 +40,7 @@ export const getProductsService = async (offset, userId) => {
 
 export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
+
   const datas = {
     size: {},
     image: {},
@@ -58,7 +59,9 @@ export const getProductService = async (id, userId, next) => {
         id: item.coid,
         description: item.description,
         nick_name: item.nick_name || '익명',
+        amILike: item.clus === userId,
       };
+
       datas.comment.push(temp);
     }
 
