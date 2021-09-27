@@ -1,4 +1,3 @@
-import { json } from 'express';
 import { ERRORS } from '../constances';
 import {
   createCommentLikeService,
@@ -15,13 +14,11 @@ export const createComment = async (req, res, next) => {
   } = res;
 
   const {
+    params: { coffeeId },
     body: { description },
   } = req;
-  console.log(
-    '댓글에 커피 아뒤가 안달려 이거 검사도 안한다..커피 아뒤 검사 해야 할꺼아냐..있는지 없는지'
-  );
 
-  if (!description || !description.length) {
+  if (!description.length || coffeeId == 'undefined') {
     res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
     return;
   }
@@ -34,7 +31,7 @@ export const createComment = async (req, res, next) => {
     return;
   }
 
-  const data = await createCommentService(userId, description, next);
+  const data = await createCommentService(userId, coffeeId, description, next);
   res.json(data);
   return;
 };

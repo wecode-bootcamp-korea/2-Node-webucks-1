@@ -52,6 +52,7 @@ export const unAuthFindManyProducts = async offset => {
 
 export const findOneProduct = async (id, next) => {
   try {
+    console.log(id);
     return client.$queryRaw`
     SELECT
       c.id,

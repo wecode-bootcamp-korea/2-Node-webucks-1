@@ -45,43 +45,45 @@ model Size {
 }
 
 model Coffee {
-  id                Int               @id @default(autoincrement())
-  createdAt         DateTime          @default(now()) @map("created_at")
-  updatedAt         DateTime          @default(now()) @updatedAt @map("updated_at")
-  koreanName        String            @map("korean_name")
-  englishName       String            @map("english_name")
-  description       String
-  categoryId        Int?              @map("categories_id")
-  sizeId            Int?              @map("sizes_id")
-  allergyToCoffeeId Int?              @map("allergy_coffee_id")
-  size              Size?             @relation(fields: [sizeId], references: [id], onDelete: SetNull)
-  category          Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  allergyToCoffee   allergyToCoffee?  @relation(fields: [allergyToCoffeeId], references: [id])
-  Comment           Comment[]
-  Image             Image[]
-  coffeeLike        CoffeeLike[]
-  NutritionAmount   NutritionCoffee[]
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
+  koreanName  String   @map("korean_name")
+  englishName String   @map("english_name")
+  description String
+  categoryId  Int?     @map("categories_id")
+  sizeId      Int?     @map("sizes_id")
+
+
+  size            Size?             @relation(fields: [sizeId], references: [id], onDelete: SetNull)
+  category        Category?         @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  allergy         allergyToCoffee[]
+  Comment         Comment[]
+  Image           Image[]
+  coffeeLike      CoffeeLike[]
+  NutritionAmount NutritionCoffee[]
+
 
   @@map("coffees")
 }
 
 model allergyToCoffee {
-  id        Int       @id @default(autoincrement())
-  allergyId Int       @map("allergies_id")
-  coffeeId  Int       @map("coffees_id")
-  allergy   Allergy[]
-  coffee    Coffee[]
+  id        Int @id @default(autoincrement())
+  allergyId Int @map("allergies_id")
+  coffeeId  Int @map("coffees_id")
+
+  allergy Allergy @relation(fields: [allergyId], references: [id])
+  Coffee  Coffee  @relation(fields: [coffeeId], references: [id])
 
   @@map("allergy_coffee")
 }
 
 model Allergy {
-  id                Int              @id @default(autoincrement())
-  createdAt         DateTime         @default(now()) @map("created_at")
-  updatedAt         DateTime         @default(now()) @updatedAt @map("updated_at")
-  allergy           String           @unique
-  allergyToCoffeeId Int?             @map("allergy_coffee_id")
-  allergyToCoffee   allergyToCoffee? @relation(fields: [allergyToCoffeeId], references: [id])
+  id        Int               @id @default(autoincrement())
+  createdAt DateTime          @default(now()) @map("created_at")
+  updatedAt DateTime          @default(now()) @updatedAt @map("updated_at")
+  allergy   String            @unique
+  coffee    allergyToCoffee[]
 
   @@map("allergies")
 }

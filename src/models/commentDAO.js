@@ -1,6 +1,6 @@
 import client from './index';
 
-export const findCommentsByCoffeeId = async (coffeeId, next) => {
+export const findCommentsByCoffeeId = async (userId, coffeeId, next) => {
   try {
     return client.$queryRaw`
     SELECT 
@@ -10,9 +10,11 @@ export const findCommentsByCoffeeId = async (coffeeId, next) => {
       c.users_id,
     FROM commens c
       LEFT OUTER JOIN comments_likes cl ON cl.comments_id=c.id
-      JOIN users u ON u.id=c.users_id
+      JOIN users u ON cl.users_id
     WHERE
-      c.coffees_id=${coffeeId}
+        c.coffees_id=${coffeeId}
+      AND
+        u.id=${userId}
     ORDER BY
       createdAt ASC;
     `;
@@ -21,17 +23,18 @@ export const findCommentsByCoffeeId = async (coffeeId, next) => {
   }
 };
 
-export const createComment = async (userId, description, next) => {
+export const createComment = async (userId, coffeeId, description, next) => {
   try {
     await client.$queryRaw`
       INSERT INTO
         comments(
           description,
+          coffees_id,
           users_id)
-      VALUES(
-        ${description},
-        ${userId}
-        );
+        VALUES(
+          ${description},
+          ${coffeeId},
+          ${userId});
     `;
 
     const data = await findCommentByCreatedAt(next);

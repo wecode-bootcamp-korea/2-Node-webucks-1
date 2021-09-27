@@ -1,3 +1,4 @@
+import { ERRORS } from '../constances';
 import {
   createComment,
   createCommentlike,
@@ -8,17 +9,33 @@ import {
   findCommentsByCoffeeId,
   updateComment,
 } from '../models/commentDAO';
+import { findProductById } from '../models/productDAO';
 import { auth } from '../models/userDAO';
 
-export const createCommentService = async (userId, description, next) => {
+export const createCommentService = async (
+  userId,
+  coffeeId,
+  description,
+  next
+) => {
+  const isCoffeeExist = await findProductById(coffeeId, next);
+
+  if (!isCoffeeExist.length) {
+    return {
+      ok: false,
+      error: ERRORS.NOITEM(),
+    };
+  }
+
   const isAuth = await auth(userId, next);
+
   return !isAuth.ok
     ? auth(userId, next)
-    : await createComment(userId, description, next);
+    : await createComment(userId, coffeeId, description, next);
 };
 
 export const getCommentsService = async (coffeeId, userId, next) => {
-  const comments = await findCommentsByCoffeeId(coffeeId, next);
+  const comments = await findCommentsByCoffeeId(coffeeId, coffeeId, next);
 
   if (userId) {
     isAuth = await auth(userId, next);

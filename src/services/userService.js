@@ -23,22 +23,21 @@ export const joinService = async (email, password, next) => {
 export const loginService = async (email, password, next) => {
   const existUser = await findUserByEmail(email, next);
   if (!existUser.length) {
-    res.status(400).json({
+    return {
       ok: false,
       error: ERRORS.INVALID,
-    });
-    return;
+    };
+  }
+
+  const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
+  if (!isPassCorrect) {
+    return {
+      ok: false,
+      error: ERRORS.INVALID,
+    };
   }
 
   try {
-    const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
-    if (!isPassCorrect) {
-      res.status(400).json({
-        ok: false,
-        error: ERRORS.INVALID,
-      });
-      return;
-    }
     const token = jwt.sign({ id: existUser[0].id }, process.env.SECRET);
     return { ok: true, token };
   } catch (e) {

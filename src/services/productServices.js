@@ -40,6 +40,7 @@ export const getProductsService = async (offset, userId) => {
 
 export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
+  console.log(data);
   const datas = {
     size: {},
     image: {},
@@ -86,7 +87,9 @@ export const getProductService = async (id, userId, next) => {
 
   for (let key in datas) {
     if (isItemExist(datas[key])) {
-      data[0][key] = datas[key];
+      if (Object.keys(datas[key]).length) {
+        data[0][key] = datas[key];
+      }
     }
   }
 

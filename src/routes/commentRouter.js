@@ -10,7 +10,7 @@ import {
 
 const router = express();
 
-router.post('/create', createComment);
+router.post('/:coffeeId/create', createComment);
 router.put('/:id/update', updateComment);
 router.delete('/:id/delete', deleteComment);
 router.post('/:id/create', createRecomment);
