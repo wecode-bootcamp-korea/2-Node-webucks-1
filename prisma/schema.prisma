@@ -24,13 +24,13 @@ model Product {
   koreanName     String           @map("korean_name")
   englishName    String           @map("english_name")
   category       Category         @relation(fields: [categoryId], references: [id])
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime?        @updatedAt
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime?        @updatedAt @map("updated_at")
   image          Image[]
   productAllergy ProductAllergy[]
   nutrition      Nutrition?
-  Like           Like[]
-  Comment        Comment[]
+  like           Like[]
+  comment        Comment[]
 
   @@map("products")
 }
@@ -80,10 +80,10 @@ model User {
   address       String?
   phone_number  String?
   policy_agreed Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
-  Like          Like[]
-  Comment       Comment[]
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime? @updatedAt @map("updated_at")
+  like          Like[]
+  comment       Comment[]
 
   @@map("users")
 }
@@ -100,13 +100,13 @@ model Like {
 
 model Comment {
   id        Int       @id @default(autoincrement())
-  contents  String    @unique
+  contents  String
   userId    Int       @map("user_id")
   productId Int       @map("product_id")
   user      User      @relation(fields: [userId], references: [id])
   product   Product   @relation(fields: [productId], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
 
   @@map("comments")
 }

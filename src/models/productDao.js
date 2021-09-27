@@ -40,4 +40,35 @@ const likeProduct = async (productId, userId) => {
   }
 };
 
-export default { getProductOne, getProduct, likeProduct };
+const commentProduct = async (productId, userId, comment) => {
+  await prisma.$queryRaw`
+    INSERT INTO comments (contents, product_id, user_id) VALUE (${comment},${productId}, ${userId})
+  `;
+  const [comments] = await prisma.$queryRaw`
+  SELECT * from comments;
+  `;
+  return comments;
+};
+
+const updateCommentProduct = async (productId, userId, comment) => {
+  await prisma.$queryRaw`
+  update comments set contents=${comment}, updated_at=now() where product_id=${productId} and user_id=${userId};
+  `;
+  const [comments] = await prisma.$queryRaw`
+  SELECT * from comments;
+  `;
+  return comments;
+};
+
+const deleteCommentProduct = async (productId, userId) => {
+  return await prisma.$queryRaw`delete from comments where product_id=${productId} and user_id=${userId}`;
+};
+
+export default {
+  getProductOne,
+  getProduct,
+  likeProduct,
+  commentProduct,
+  updateCommentProduct,
+  deleteCommentProduct,
+};

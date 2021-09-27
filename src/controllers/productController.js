@@ -28,4 +28,57 @@ const likeProduct = async (req, res) => {
   }
 };
 
-export default { getProduct, getProductOne, likeProduct };
+const commentProduct = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.decoded.id;
+  const { comment } = req.body;
+  try {
+    const status = await productService.commentProduct(
+      productId,
+      userId,
+      comment
+    );
+    res.status(201).json({
+      message: 'COMMENT_UPLOADED',
+      comment: status,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateCommentProduct = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.decoded.id;
+  const { comment } = req.body;
+  try {
+    await productService.updateCommentProduct(productId, userId, comment);
+    res.status(201).json({
+      message: 'UPDATED',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const deleteCommentProduct = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.decoded.id;
+  try {
+    await productService.deleteCommentProduct(productId, userId);
+    res.status(201).json({
+      message: 'DELETED',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export default {
+  getProduct,
+  getProductOne,
+  likeProduct,
+  commentProduct,
+  updateCommentProduct,
+  deleteCommentProduct,
+};
