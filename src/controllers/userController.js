@@ -9,6 +9,8 @@ const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await userService.login(email, password);
+    const token = await userService.createToken(user);
+    res.cookie('user', token);
     res.json(user);
   } catch (error) {
     res.status(500).send('invalid user');

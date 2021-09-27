@@ -9,7 +9,7 @@ const getUser = async () => {
   return users;
 };
 
-const login = async (email, password) => {
+const login = async email => {
   const user = await prisma.$queryRaw`
     SELECT * from users
     WHERE email=${email};

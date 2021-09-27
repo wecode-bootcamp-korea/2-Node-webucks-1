@@ -1,6 +1,10 @@
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { userModel } from '../models';
 
+dotenv.config();
+const SECRET_KEY = process.env.SECRET_KEY;
 const getUser = async () => {
   const users = await userModel.getUser();
   return users;
@@ -13,6 +17,16 @@ const login = async (email, password) => {
   if (result) {
     return user;
   } else throw new error('invalid user');
+};
+
+const createToken = async user => {
+  const token = jwt.sign(
+    {
+      email: user.email,
+    },
+    SECRET_KEY
+  );
+  return token;
 };
 
 const setUser = async (
@@ -36,4 +50,4 @@ const setUser = async (
   return user;
 };
 
-export default { getUser, setUser, login };
+export default { getUser, setUser, login, createToken };
