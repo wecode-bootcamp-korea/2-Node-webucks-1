@@ -36,7 +36,7 @@ const logInUser = async (email, password) => {
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
-      const token = jwt.sign({ user: user }, secret);
+      const token = jwt.sign({ user: user }, secret, { expiresIn: '7d' });
       return token;
     }
   }
@@ -75,4 +75,18 @@ const createUser = async (email, password, username, address, phone_number) => {
   }
 };
 
-export default { getUser, logInUser, createUser };
+const checkUser = async () => {
+  const users = await prisma.$queryRaw`
+    SELECT
+      email, 
+      password, 
+      username, 
+      address, 
+      phone_number
+    FROM
+      users;
+  `;
+  return users;
+};
+
+export default { getUser, logInUser, createUser, checkUser };

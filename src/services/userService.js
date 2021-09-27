@@ -18,4 +18,8 @@ const createUser = async (email, password, username, address, phone_number) => {
   );
 };
 
-export default { getUser, logInUser, createUser };
+const checkUser = async () => {
+  return await userDao.checkUser();
+};
+
+export default { getUser, logInUser, createUser, checkUser };

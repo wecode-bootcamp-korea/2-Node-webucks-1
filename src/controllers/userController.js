@@ -19,7 +19,10 @@ const logInUser = async (req, res) => {
     if (!token) {
       res.status(400).json('PLEASE CHECK EMAIL OR PASSWORD');
     } else {
-      res.status(201).json({
+      res.cookie('user', token, {
+        httpOnly: true,
+      });
+      return res.status(201).json({
         message: 'LOGIN SUCCEED',
         token,
       });
@@ -54,4 +57,16 @@ const createUser = async (req, res) => {
   }
 };
 
-export default { getUser, logInUser, createUser };
+const checkUser = async (req, res) => {
+  try {
+    const users = await userService.checkUser();
+    res.status(201).json({
+      message: 'VALID USER',
+      data: users,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export default { getUser, logInUser, createUser, checkUser };
