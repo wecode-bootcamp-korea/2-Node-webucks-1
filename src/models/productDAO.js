@@ -52,7 +52,6 @@ export const unAuthFindManyProducts = async offset => {
 
 export const findOneProduct = async (id, next) => {
   try {
-    console.log(id);
     return client.$queryRaw`
     SELECT
       c.id,
@@ -65,14 +64,20 @@ export const findOneProduct = async (id, next) => {
       a.allergy,
       n.nutrient,
       nc.amount,
-      n.id
+      n.id nid,
+      co.description,
+      co.id coid,
+      co.description,
+      u.nick_name
     FROM coffees c
-       JOIN sizes s ON c.sizes_id=s.id
-       JOIN images i ON c.id=i.coffees_id
-       JOIN allergy_coffee ac ON ac.coffees_id=c.id
-       JOIN allergies a ON a.id=ac.allergies_id
-       JOIN nutrition_coffee nc ON nc.coffees_id=c.id
-       JOIN nutritions n ON n.id=nc.nutritions_id
+      JOIN sizes s ON c.sizes_id=s.id
+      JOIN images i ON c.id=i.coffees_id
+      JOIN nutrition_coffee nc ON nc.coffees_id=c.id
+      JOIN nutritions n ON n.id=nc.nutritions_id
+      LEFT OUTER JOIN allergy_coffee ac ON ac.coffees_id=c.id
+      LEFT OUTER JOIN allergies a ON a.id=ac.allergies_id
+      LEFT OUTER JOIN comments co ON co.coffees_id=c.id
+      LEFT OUTER JOIN users u on u.id=co.users_id 
     WHERE 
       c.id=${id};
     `;

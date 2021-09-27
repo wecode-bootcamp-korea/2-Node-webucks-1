@@ -40,10 +40,10 @@ export const getProductsService = async (offset, userId) => {
 
 export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
-  console.log(data);
   const datas = {
     size: {},
     image: {},
+    comment: [],
     allergies: [],
     nutrients1: [],
     nutrients2: [],
@@ -51,6 +51,17 @@ export const getProductService = async (id, userId, next) => {
   };
 
   for (let item of data) {
+    if (item.coid && item.description) {
+      const isExist = datas.comment.find(jtem => (jtem.id = item.coid));
+      if (isExist) continue;
+      const temp = {
+        id: item.coid,
+        description: item.description,
+        user: item.nick_name || '익명',
+      };
+      datas.comment.push(temp);
+    }
+
     if (item.allergy && !datas.allergies.includes(item.allergy)) {
       datas.allergies.push(item.allergy);
     }
@@ -69,7 +80,11 @@ export const getProductService = async (id, userId, next) => {
       );
 
       if (!isNutrient1Exist && !isNutrient2Exist && !isNutrient3Exist) {
-        const nutrient = { nutrient: item.nutrient, amount: item.amount };
+        const nutrient = {
+          nutrient: item.nutrient,
+          amount: item.amount,
+          id: item.nid,
+        };
 
         if (datas.nutrients1.length < 2) {
           datas.nutrients1.push(nutrient);
@@ -98,6 +113,9 @@ export const getProductService = async (id, userId, next) => {
   delete data[0].src;
   delete data[0].allergy;
   delete data[0].nutrient;
+  delete data[0].description;
+  delete data[0].coid;
+  delete data[0].users_id;
 
   if (userId) {
     const isAuth = await auth(userId, next);

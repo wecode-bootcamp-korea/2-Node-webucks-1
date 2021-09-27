@@ -180,7 +180,6 @@ export const createCommentlike = async (userId, commentId, next) => {
 
 export const deleteCommentLike = async (userId, commentId, next) => {
   const isExist = await findCommentLikeByIds(userId, commentId, next);
-  console.log(userId, commentId, isExist);
   if (!isExist.ok) {
     return isExist;
   }
