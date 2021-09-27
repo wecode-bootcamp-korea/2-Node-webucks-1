@@ -1,13 +1,12 @@
-import { categoryModels } from '../models';
+import { categoryModel } from '../models';
 
 const getCategory = async () => {
-  const category = await categoryModels.getCategory();
+  const category = await categoryModel.getCategory();
   return category;
 };
 
 const setCategory = async () => {
-  const category = await categoryModels.setCategory();
-
+  const category = await categoryModel.setCategory();
   return category;
 };
 

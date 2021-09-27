@@ -1,12 +1,12 @@
-import { productModels } from '../models';
+import { productModel } from '../models';
 
 const getProduct = async () => {
-  const product = await productModels.getProduct();
+  const product = await productModel.getProduct();
   return product;
 };
 
 const getProductOne = async productId => {
-  const product = await productModels.getProductOne(productId);
+  const product = await productModel.getProductOne(productId);
   return product;
 };
 

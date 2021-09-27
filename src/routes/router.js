@@ -3,7 +3,7 @@ import express from 'express';
 import categoryRouter from './categoryRouter';
 import productRouter from './productRouter';
 import userRouter from './userRouter';
-import { indexController } from '../controllers/index';
+import { indexController } from '../controllers';
 const router = express.Router();
 
 router.get('/', indexController.getHome);

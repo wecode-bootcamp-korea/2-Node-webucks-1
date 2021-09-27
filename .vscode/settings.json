@@ -8,5 +8,7 @@
   "javascript.format.enable": false,
   "eslint.alwaysShowStatus": true,
   "files.autoSave": "onFocusChange",
-  "[prisma]": { "editor.defaultFormatter": "Prisma.prisma" }
+  "[prisma]": { "editor.defaultFormatter": "Prisma.prisma" },
+  "editor.fontFamily": "D2Coding ligature",
+  "editor.fontLigatures": true
 }
