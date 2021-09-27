@@ -14,4 +14,18 @@ const getProductOne = async (req, res) => {
   res.json(product);
 };
 
-export default { getProduct, getProductOne };
+const likeProduct = async (req, res) => {
+  const productId = req.params.id;
+  const userId = req.decoded.id;
+
+  try {
+    const isLiked = await productService.likeProduct(productId, userId);
+    res.status(201).json({
+      message: isLiked ? 'LIKED' : 'DISLIKED',
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export default { getProduct, getProductOne, likeProduct };

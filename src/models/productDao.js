@@ -25,4 +25,19 @@ const getProductOne = async productId => {
   return product;
 };
 
-export default { getProductOne, getProduct };
+const likeProduct = async (productId, userId) => {
+  const [isLiked] = await prisma.$queryRaw`
+    select * from likes where product_id=${productId} and user_id=${userId}
+    `;
+  if (isLiked) {
+    await prisma.$queryRaw`delete from likes where product_id=${productId} and user_id=${userId}`;
+    return false;
+  } else {
+    await prisma.$queryRaw`
+      INSERT INTO likes (product_id, user_id) VALUE (${productId}, ${userId})
+    `;
+    return true;
+  }
+};
+
+export default { getProductOne, getProduct, likeProduct };

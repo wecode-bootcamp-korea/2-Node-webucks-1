@@ -23,6 +23,7 @@ const getUser = async () => {
 const logInUser = async (email, password) => {
   const [user] = await prisma.$queryRaw`
     SELECT
+      id,
       email, 
       password, 
       username, 
@@ -36,7 +37,7 @@ const logInUser = async (email, password) => {
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
-      const token = jwt.sign({ user: user }, secret, { expiresIn: '7d' });
+      const token = jwt.sign({ id: user.id }, secret, { expiresIn: '7d' });
       return token;
     }
   }

@@ -17,7 +17,7 @@ const logInUser = async (req, res) => {
     const { email, password } = req.body;
     const token = await userService.logInUser(email, password);
     if (!token) {
-      res.status(400).json('PLEASE CHECK EMAIL OR PASSWORD');
+      res.status(401).json('PLEASE CHECK EMAIL OR PASSWORD');
     } else {
       res.cookie('user', token, {
         httpOnly: true,
@@ -43,7 +43,7 @@ const createUser = async (req, res) => {
       phone_number
     );
     if (!newUser) {
-      res.status(400).json({
+      res.status(401).json({
         message: 'EMAIL ALREADY EXIST',
       });
     } else {

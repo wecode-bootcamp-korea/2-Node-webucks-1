@@ -10,4 +10,9 @@ const getProductOne = async productId => {
   return product;
 };
 
-export default { getProductOne, getProduct };
+const likeProduct = async (productId, userId) => {
+  const product = await productDao.likeProduct(productId, userId);
+  return product;
+};
+
+export default { getProductOne, getProduct, likeProduct };
