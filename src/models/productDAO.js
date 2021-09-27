@@ -14,8 +14,7 @@ export const authFindManyProducts = async offset => {
     FROM coffees c
     ORDER BY
       c.id ASC
-    LIMIT ${offset}, 20
-  )q
+    LIMIT ${offset}, 20)q
   JOIN coffees c ON c.id=q.id
   JOIN categories ct ON ct.key=c.categories_id
   JOIN images i ON i.coffees_id=c.id
@@ -40,7 +39,7 @@ export const unAuthFindManyProducts = async offset => {
     ORDER BY
       c.id ASC
     LIMIT ${offset}, 20
-  )q
+    )q
   JOIN coffees c ON c.id=q.id
   JOIN categories ct ON ct.key=c.categories_id
   JOIN images i ON i.coffees_id=c.id
@@ -81,7 +80,9 @@ export const findOneProduct = async (id, next) => {
       LEFT OUTER JOIN users u ON u.id=co.users_id 
       LEFT OUTER JOIN comments_likes cls ON cls.comments_id=co.id
     WHERE 
-      c.id=${id};
+      c.id=${id}
+    ORDER BY
+      co.created_at DESC
     `;
   } catch (e) {
     next(e);
@@ -107,10 +108,12 @@ export const createLike = async (userId, coffeeId, next) => {
     INSERT INTO
     coffees_likes(
       users_id,
-      coffees_id)
+      coffees_id
+      )
     VALUES(
       ${userId},
-      ${coffeeId});
+      ${coffeeId}
+      );
     `;
 
     return {

@@ -22,11 +22,13 @@ export const createUser = async (email, password, next) => {
       users(
         email,
         password,
-        updated_at) 
+        updated_at
+        ) 
     VALUES(
       ${email},
       ${password},
-      ${new Date()});
+      ${new Date()}
+      );
     `;
 
     const data = await findUserByEmail(email, next);

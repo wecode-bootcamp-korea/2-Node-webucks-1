@@ -1,5 +1,6 @@
 import client from './index';
 
+//사용하지 않는 함수(coffee 1개 가져오는 select 쿼리에 모두 조인 시킴-> offset 이 잘 안될 경우 이 함수 사용 예정)
 export const findCommentsByCoffeeId = async (userId, coffeeId, next) => {
   try {
     return client.$queryRaw`
@@ -30,11 +31,13 @@ export const createComment = async (userId, coffeeId, description, next) => {
         comments(
           description,
           coffees_id,
-          users_id)
+          users_id
+          )
         VALUES(
           ${description},
           ${coffeeId},
-          ${userId});
+          ${userId}
+          );
     `;
 
     const data = await findCommentByCreatedAt(next);
@@ -125,11 +128,13 @@ export const createRecomment = async (userId, commentId, description, next) => {
       re_comments(
         description,
         users_id,
-        comments_id)
+        comments_id
+        )
     VALUES(
       ${description},
       ${userId},
-      ${commentId});
+      ${commentId}
+      );
     `;
 
     const data = await findRecommentByCreatedAt(userId, next);
@@ -167,10 +172,11 @@ export const createCommentlike = async (userId, commentId, next) => {
       comments_likes(
         users_id,
         comments_id
-      )
+        )
       VALUES(
         ${userId},
-        ${commentId});
+        ${commentId}
+        );
     `;
 
     return {

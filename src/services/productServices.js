@@ -10,7 +10,12 @@ import {
   unAuthFindManyProducts,
 } from '../models/productDAO';
 import { auth, findUserById } from '../models/userDAO';
-import { addAmILike, changeKeyName, isItemExist } from '../utils';
+import {
+  addAmILike,
+  changeKeyName,
+  isItemExist,
+  offsetPagnation,
+} from '../utils';
 
 export const getCategoriesService = async () => {
   return findManyCategories();
@@ -50,7 +55,6 @@ export const getProductService = async (id, userId, next) => {
     nutrients2: [],
     nutrients3: [],
   };
-
   for (let item of data) {
     if (item.coid && item.description) {
       const isExist = datas.comment.find(jtem => jtem.id === item.coid);
@@ -103,8 +107,6 @@ export const getProductService = async (id, userId, next) => {
     datas.image.url = item.src;
   }
 
-  datas.comment.sort((a, b) => b.id - a.id);
-
   for (let key in datas) {
     if (isItemExist(datas[key])) {
       if (Object.keys(datas[key]).length) {
@@ -113,14 +115,16 @@ export const getProductService = async (id, userId, next) => {
     }
   }
 
-  delete data[0].name;
-  delete data[0].amount;
-  delete data[0].src;
-  delete data[0].allergy;
-  delete data[0].nutrient;
-  delete data[0].description;
-  delete data[0].coid;
-  delete data[0].users_id;
+  if (data[0]) {
+    delete data[0].name;
+    delete data[0].amount;
+    delete data[0].src;
+    delete data[0].allergy;
+    delete data[0].nutrient;
+    delete data[0].description;
+    delete data[0].coid;
+    delete data[0].users_id;
+  }
 
   if (userId) {
     const isAuth = await auth(userId, next);

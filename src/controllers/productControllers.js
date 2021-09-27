@@ -29,6 +29,7 @@ export const getProducts = async (req, res, next) => {
 
 export const getProduct = async (req, res, next) => {
   const {
+    query: { offset },
     params: { id },
   } = req;
 
@@ -44,7 +45,7 @@ export const getProduct = async (req, res, next) => {
     return;
   }
 
-  const data = await getProductService(id, userId, next);
+  const data = await getProductService(id, userId, next, offset);
   res.json(data);
   return;
 };
