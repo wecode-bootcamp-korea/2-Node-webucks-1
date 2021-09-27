@@ -15,7 +15,6 @@ export const isValid = (email, password) => {
 };
 
 export const isItemExist = item => {
-  console.log('item', item);
   if (typeof item === 'object') {
     switch (Array.isArray(item)) {
       case true:

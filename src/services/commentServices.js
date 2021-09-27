@@ -29,9 +29,16 @@ export const createCommentService = async (
 
   const isAuth = await auth(userId, next);
 
-  return !isAuth.ok
-    ? auth(userId, next)
-    : await createComment(userId, coffeeId, description, next);
+  const createdComment = await createComment(
+    userId,
+    coffeeId,
+    description,
+    next
+  );
+
+  createdComment.data.nick_name = createdComment.data.nick_name || '익명';
+
+  return !isAuth.ok ? auth(userId, next) : createdComment;
 };
 
 export const getCommentsService = async (coffeeId, userId, next) => {

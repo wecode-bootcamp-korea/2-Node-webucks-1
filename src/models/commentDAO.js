@@ -53,10 +53,13 @@ const findCommentByCreatedAt = async next => {
       SELECT 
         c.id,
         c.created_at,
-        c.description
+        c.description,
+        u.nick_name
       FROM comments c
+      JOIN users u ON u.id=c.users_id 
       ORDER BY 
         created_at DESC
+
     `;
 
     return data[0];

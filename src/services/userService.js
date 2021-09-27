@@ -12,12 +12,14 @@ export const joinService = async (email, password, next) => {
       error: ERRORS.EXIST,
     };
   }
+
+  let hashedPassword;
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    return createUser(email, hashedPassword, next);
+    hashedPassword = await bcrypt.hash(password, 10);
   } catch (e) {
     next(e);
   }
+  return createUser(email, hashedPassword, next);
 };
 
 export const loginService = async (email, password, next) => {

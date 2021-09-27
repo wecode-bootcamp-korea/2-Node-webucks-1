@@ -52,12 +52,12 @@ export const getProductService = async (id, userId, next) => {
 
   for (let item of data) {
     if (item.coid && item.description) {
-      const isExist = datas.comment.find(jtem => (jtem.id = item.coid));
+      const isExist = datas.comment.find(jtem => jtem.id === item.coid);
       if (isExist) continue;
       const temp = {
         id: item.coid,
         description: item.description,
-        user: item.nick_name || '익명',
+        nick_name: item.nick_name || '익명',
       };
       datas.comment.push(temp);
     }
@@ -100,6 +100,8 @@ export const getProductService = async (id, userId, next) => {
     datas.image.url = item.src;
   }
 
+  datas.comment.sort((a, b) => b.id - a.id);
+
   for (let key in datas) {
     if (isItemExist(datas[key])) {
       if (Object.keys(datas[key]).length) {
@@ -124,6 +126,7 @@ export const getProductService = async (id, userId, next) => {
       data[0].isLike = !!isLikeExist.length;
     }
   }
+
   return data[0];
 };
 
