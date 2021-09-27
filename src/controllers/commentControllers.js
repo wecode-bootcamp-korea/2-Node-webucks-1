@@ -18,8 +18,9 @@ export const createComment = async (req, res, next) => {
     body: { description },
   } = req;
 
+  console.log(coffeeId);
   if (coffeeId)
-    if (!description?.length || coffeeId == 'undefined') {
+    if (!description.length) {
       res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
       return;
     }
@@ -47,7 +48,7 @@ export const updateComment = async (req, res, next) => {
     body: { description },
   } = req;
 
-  if (!commentId || !description) {
+  if (!description.length) {
     res.status(400).json({ ok: false, error: ERRORS.INVALID });
     return;
   }
@@ -73,14 +74,6 @@ export const deleteComment = async (req, res, next) => {
     params: { id: commentId },
   } = req;
 
-  if (!commentId) {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOITEM('댓글이'),
-    });
-    return;
-  }
-
   if (!userId) {
     res.status(403).json({
       ok: false,
@@ -104,7 +97,7 @@ export const createRecomment = async (req, res, next) => {
     params: { id: commentId },
   } = req;
 
-  if (!commentId) {
+  if (!description.length) {
     res.status(404).json({
       ok: false,
       error: ERRORS.NOITEM('댓글이'),
@@ -145,13 +138,6 @@ export const createCommentlike = async (req, res, next) => {
     });
   }
 
-  if (!commentId) {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOITEM('댓글이'),
-    });
-  }
-
   const data = await createCommentLikeService(userId, commentId, next);
   res.json(data);
   return;
@@ -169,13 +155,6 @@ export const deleteCommentLike = async (req, res, next) => {
     res.status(403).json({
       ok: false,
       error: ERRORS.UNAUTH,
-    });
-  }
-
-  if (!commentId) {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOITEM('댓글이'),
     });
   }
 

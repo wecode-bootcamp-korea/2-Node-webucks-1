@@ -8,7 +8,6 @@ import {
 } from '../services/productServices';
 
 export const getCategories = async (req, res) => {
-  console.log(11, res.locals);
   const data = await getCategoriesService();
   res.json(data);
   return;
@@ -38,14 +37,6 @@ export const getProduct = async (req, res, next) => {
     locals: { userId },
   } = res;
 
-  if (id === 'undefined') {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOPARAMS,
-    });
-    return;
-  }
-
   const data = await getProductService(id, userId, next, offset);
   res.json(data);
   return;
@@ -57,17 +48,11 @@ export const createLike = async (req, res, next) => {
   const {
     params: { id: coffeeId },
   } = req;
+
   if (!locals.userId) {
     res.status(403).json({
       ok: false,
       error: ERRORS.UNAUTH,
-    });
-  }
-
-  if (coffeeId === 'undefined') {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOPARAMS,
     });
   }
 
@@ -87,13 +72,6 @@ export const deleteLike = async (req, res, next) => {
     res.status(403).json({
       ok: false,
       error: ERRORS.UNAUTH,
-    });
-  }
-
-  if (coffeeId === 'undefined') {
-    res.status(404).json({
-      ok: false,
-      error: ERRORS.NOPARAMS,
     });
   }
 

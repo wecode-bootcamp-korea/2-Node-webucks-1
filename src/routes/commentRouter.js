@@ -13,7 +13,6 @@ const router = express();
 router.post('/:coffeeId/create', createComment);
 router.put('/:id/update', updateComment);
 router.delete('/:id/delete', deleteComment);
-router.post('/:id/create', createRecomment);
 router.post('/:id/like', createCommentlike);
 router.delete('/:id/dislike', deleteCommentLike);
 export default router;

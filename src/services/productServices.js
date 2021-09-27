@@ -38,6 +38,7 @@ export const getProductsService = async (offset, userId) => {
   return data;
 };
 
+//이 함수 망했는데?;;
 export const getProductService = async (id, userId, next) => {
   const data = await findOneProduct(id, next);
 

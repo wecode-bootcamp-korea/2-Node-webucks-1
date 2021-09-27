@@ -6,7 +6,6 @@ import {
   deleteComment,
   deleteCommentLike,
   findCommentByIds,
-  findCommentsByCoffeeId,
   updateComment,
 } from '../models/commentDAO';
 import { findProductById } from '../models/productDAO';
@@ -41,22 +40,6 @@ export const createCommentService = async (
   return !isAuth.ok ? auth(userId, next) : createdComment;
 };
 
-export const getCommentsService = async (coffeeId, userId, next) => {
-  const comments = await findCommentsByCoffeeId(coffeeId, coffeeId, next);
-
-  if (userId) {
-    isAuth = await auth(userId, next);
-    if (isAuth.ok) {
-    }
-  }
-  //일단 크리에이트 먼저 하고 돌아온다
-  //amILike 와 isMine 이 추가
-
-  for (let comment of comments) {
-    comment.isMine = comment.users_id === userId;
-  }
-};
-
 export const updateCommentService = async (
   userId,
   commentId,
@@ -86,6 +69,7 @@ export const deleteCommentService = async (userId, commentId, next) => {
       error: ERRORS.UNAUTH,
     });
   }
+
   const commentExist = await findCommentByIds(userId, commentId, next);
   if (!commentExist.length) {
     res.status(404).json({

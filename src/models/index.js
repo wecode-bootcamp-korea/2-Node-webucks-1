@@ -8,7 +8,9 @@ client.$use(async (params, next) => {
   const result = await next(params);
   const after = Date.now();
 
-  console.log(`Query ${params.action} took ${after - before}ms`);
+  if (after - before > 1000) {
+    console.log(`Query ${params.action} took ${after - before}ms`);
+  }
 
   return result;
 });

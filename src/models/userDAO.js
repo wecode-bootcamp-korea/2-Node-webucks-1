@@ -27,7 +27,6 @@ export const createUser = async (email, password, next) => {
     VALUES(
       ${email},
       ${password},
-      ${new Date()}
       );
     `;
 
