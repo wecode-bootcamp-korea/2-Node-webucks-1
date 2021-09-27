@@ -5,6 +5,16 @@ const getUser = async (req, res) => {
   res.json(users);
 };
 
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await userService.login(email, password);
+    res.json(user);
+  } catch (error) {
+    res.status(500).send('invalid user');
+  }
+};
+
 const setUser = async (req, res) => {
   const { email, password, username, address, phoneNumber, policyAgreed } =
     req.body;
@@ -19,4 +29,4 @@ const setUser = async (req, res) => {
   res.json(user);
 };
 
-export default { getUser, setUser };
+export default { getUser, setUser, login };
