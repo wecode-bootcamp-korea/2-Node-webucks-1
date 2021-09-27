@@ -18,10 +18,11 @@ export const createComment = async (req, res, next) => {
     body: { description },
   } = req;
 
-  if (!description?.length || coffeeId == 'undefined') {
-    res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
-    return;
-  }
+  if (coffeeId)
+    if (!description?.length || coffeeId == 'undefined') {
+      res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
+      return;
+    }
 
   if (!userId) {
     res.status(403).json({

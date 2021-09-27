@@ -10,12 +10,7 @@ import {
   unAuthFindManyProducts,
 } from '../models/productDAO';
 import { auth, findUserById } from '../models/userDAO';
-import {
-  addAmILike,
-  changeKeyName,
-  isItemExist,
-  offsetPagnation,
-} from '../utils';
+import { addAmILike, changeKeyName, isItemExist } from '../utils';
 
 export const getCategoriesService = async () => {
   return findManyCategories();

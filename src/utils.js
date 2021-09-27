@@ -55,3 +55,13 @@ export const addAmILike = (array, userId) => {
   }
   return newArray;
 };
+
+export const isBlackList = param => {
+  const blackWords = ['join', 'insert', 'alter', 'drop', 'select'];
+
+  for (let item of blackWords) {
+    if (param.includes(item)) return true;
+  }
+
+  return false;
+};

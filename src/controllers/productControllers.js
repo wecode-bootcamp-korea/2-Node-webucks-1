@@ -8,6 +8,7 @@ import {
 } from '../services/productServices';
 
 export const getCategories = async (req, res) => {
+  console.log(11, res.locals);
   const data = await getCategoriesService();
   res.json(data);
   return;
