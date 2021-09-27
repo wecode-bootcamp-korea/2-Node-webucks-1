@@ -4,7 +4,7 @@ import { isValid } from '../utils';
 
 export const joinController = async (req, res, next) => {
   const {
-    body: { email, password, passwordConfirm },
+    body: { email, password, passwordConfirm, nickName },
   } = req;
 
   if (!isValid(email, password) || password !== passwordConfirm) {
@@ -14,7 +14,7 @@ export const joinController = async (req, res, next) => {
     });
   }
 
-  const result = await joinService(email, password, next);
+  const result = await joinService(email, password, nickName, next);
   res.json(result);
   return;
 };

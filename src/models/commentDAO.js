@@ -1,29 +1,5 @@
 import client from './index';
 
-//사용하지 않는 함수(coffee 1개 가져오는 select 쿼리에 모두 조인 시킴-> offset 이 잘 안될 경우 이 함수 사용 예정)
-export const findCommentsByCoffeeId = async (userId, coffeeId, next) => {
-  try {
-    return client.$queryRaw`
-    SELECT 
-      c.id,
-      c.created_at,
-      c.description,
-      c.users_id,
-    FROM commens c
-      LEFT OUTER JOIN comments_likes cl ON cl.comments_id=c.id
-      JOIN users u ON cl.users_id
-    WHERE
-        c.coffees_id=${coffeeId}
-      AND
-        u.id=${userId}
-    ORDER BY
-      createdAt ASC;
-    `;
-  } catch (e) {
-    next(e);
-  }
-};
-
 export const createComment = async (userId, coffeeId, description, next) => {
   try {
     await client.$queryRaw`

@@ -2,7 +2,6 @@ import express from 'express';
 import {
   createComment,
   createCommentlike,
-  createRecomment,
   deleteComment,
   deleteCommentLike,
   updateComment,

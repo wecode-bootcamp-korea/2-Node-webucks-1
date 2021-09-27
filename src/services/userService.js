@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ERRORS } from '../constances';
 
-export const joinService = async (email, password, next) => {
+export const joinService = async (email, password, nickName, next) => {
   const isExist = await findUserByEmail(email, next);
 
   if (isExist.length) {
@@ -14,12 +14,14 @@ export const joinService = async (email, password, next) => {
   }
 
   let hashedPassword;
+
   try {
     hashedPassword = await bcrypt.hash(password, 10);
   } catch (e) {
     next(e);
   }
-  return createUser(email, hashedPassword, next);
+
+  return createUser(email, hashedPassword, nickName, next);
 };
 
 export const loginService = async (email, password, next) => {
@@ -39,10 +41,13 @@ export const loginService = async (email, password, next) => {
     };
   }
 
+  let token;
+
   try {
-    const token = jwt.sign({ id: existUser[0].id }, process.env.SECRET);
-    return { ok: true, token };
+    token = jwt.sign({ id: existUser[0].id }, process.env.SECRET);
   } catch (e) {
     next(e);
   }
+
+  return { ok: true, token };
 };

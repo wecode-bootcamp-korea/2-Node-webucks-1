@@ -51,6 +51,7 @@ export const getProductService = async (id, userId, next) => {
     nutrients2: [],
     nutrients3: [],
   };
+
   for (let item of data) {
     if (item.coid && item.description) {
       const isExist = datas.comment.find(jtem => jtem.id === item.coid);

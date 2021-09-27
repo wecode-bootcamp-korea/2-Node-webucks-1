@@ -15,18 +15,20 @@ export const findUserByEmail = async (email, next) => {
   }
 };
 
-export const createUser = async (email, password, next) => {
+export const createUser = async (email, password, nickName = '익명', next) => {
   try {
     await client.$queryRaw`
     INSERT INTO 
       users(
         email,
         password,
+        nick_name,
         updated_at
         ) 
     VALUES(
       ${email},
       ${password},
+      ${nickName}
       );
     `;
 
