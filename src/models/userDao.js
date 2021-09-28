@@ -1,10 +1,9 @@
 import prisma from '../../prisma';
 
-const getUser = async () => {
+const getUsers = async () => {
   const users = await prisma.$queryRaw`
     SELECT
       email, 
-      password, 
       username, 
       address, 
       phone_number
@@ -14,7 +13,14 @@ const getUser = async () => {
   return users;
 };
 
-const logInUser = async (email, password) => {
+const findUser = async id => {
+  const [isCreatedUser] = await prisma.$queryRaw`
+      SELECT EXISTS(SELECT * FROM users where id=${id})
+    ;`;
+  return isCreatedUser;
+};
+
+const loginUser = async email => {
   const [user] = await prisma.$queryRaw`
     SELECT
       id,
@@ -31,12 +37,9 @@ const logInUser = async (email, password) => {
   return user;
 };
 
-const createUser = async (email, hash, username, address, phone_number) => {
-  const [isCreatedUser] =
-    await prisma.$queryRaw`SELECT EXISTS(SELECT * FROM users where email=${email});`;
-  const createdUser = isCreatedUser[Object.keys(isCreatedUser)[0]];
-  if (createdUser === 0) {
-    await prisma.$queryRaw`
+const createUser = async (userData, hash) => {
+  const { email, username, address, phone_number } = userData;
+  await prisma.$queryRaw`
     INSERT INTO
       users(
         email, 
@@ -53,28 +56,30 @@ const createUser = async (email, hash, username, address, phone_number) => {
         ${phone_number}
       );
     `;
-    const [newUser] = await prisma.$queryRaw`
-      SELECT email, username
-      FROM users
-      WHERE email=${email};
-    `;
-
-    return newUser;
-  }
-};
-
-const checkUser = async () => {
-  const users = await prisma.$queryRaw`
-    SELECT
-      email, 
-      password, 
-      username, 
-      address, 
-      phone_number
-    FROM
-      users;
+  const [newUser] = await prisma.$queryRaw`
+    SELECT email, username
+    FROM users
+    WHERE email=${email};
   `;
-  return users;
+
+  return newUser;
 };
 
-export default { getUser, logInUser, createUser, checkUser };
+const deleteUser = async userId => {
+  return await prisma.$queryRaw`
+    UPDATE users
+    SET 
+      deleted_at=now(), 
+      is_deleted=true 
+    WHERE 
+      id=${userId}
+    ;`;
+};
+
+export default {
+  getUsers,
+  loginUser,
+  createUser,
+  findUser,
+  deleteUser,
+};

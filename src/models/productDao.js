@@ -1,20 +1,30 @@
 import prisma from '../../prisma';
 
-const getProduct = async () => {
-  const product = await prisma.$queryRaw`
-  SELECT p.id, p.korean_name, p.english_name, c.name, c.id, i.image_url
+const getProducts = async () => {
+  const products = await prisma.$queryRaw`
+  SELECT 
+    p.id, 
+    p.korean_name, 
+    p.english_name, 
+    c.name, 
+    c.id, 
+    i.image_url
   FROM products p
   JOIN categories c
   ON c.id = p.category_id
   JOIN images i
   ON i.product_id = p.id
   `;
-  return product;
+  return products;
 };
 
-const getProductOne = async productId => {
-  const product = await prisma.$queryRaw`
-  SELECT p.id, p.korean_name, p.english_name, i.image_url
+const getProduct = async productId => {
+  const [product] = await prisma.$queryRaw`
+  SELECT 
+    p.id, 
+    p.korean_name, 
+    p.english_name, 
+    i.image_url
   FROM products p
   JOIN images i
   ON i.product_id = p.id
@@ -42,16 +52,16 @@ const commentProduct = async (productId, userId, comment) => {
   await prisma.$queryRaw`
     INSERT INTO comments (contents, product_id, user_id) VALUE (${comment},${productId}, ${userId})
   `;
-  const comments = await prisma.$queryRaw`
+  const [createdComment] = await prisma.$queryRaw`
   SELECT id, contents, user_id, product_id
   FROM comments
-  ORDER BY comments.id;
+  ORDER BY comments.id DESC LIMIT 1;
   `;
-  return comments;
+  return createdComment;
 };
 
 const updateCommentProduct = async (productId, userId, comment) => {
-  await prisma.$queryRaw`
+  return await prisma.$queryRaw`
   UPDATE comments 
   SET 
     contents=${comment}, 
@@ -61,28 +71,23 @@ const updateCommentProduct = async (productId, userId, comment) => {
   AND 
     user_id=${userId};
   `;
-  const comments = await prisma.$queryRaw`
-  SELECT id, contents, user_id, product_id
-  FROM comments
-  ORDER BY comments.id;
-  `;
-  return comments;
 };
 
 const deleteCommentProduct = async (productId, userId) => {
   return await prisma.$queryRaw`
-  UPDATE comments 
-  SET 
-    deleted_at=now(), 
-    is_deleted=true 
-  WHERE 
-    product_id=${productId} 
-  AND 
-    user_id=${userId};`;
+    UPDATE comments 
+    SET 
+      deleted_at=now(), 
+      is_deleted=true 
+    WHERE 
+      product_id=${productId} 
+    AND 
+      user_id=${userId}
+  ;`;
 };
 
 export default {
-  getProductOne,
+  getProducts,
   getProduct,
   likeProduct,
   commentProduct,

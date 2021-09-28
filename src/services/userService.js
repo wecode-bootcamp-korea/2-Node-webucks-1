@@ -6,12 +6,18 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { secret } = process.env;
 
-const getUser = async () => {
-  return await userDao.getUser();
+const getUsers = async () => {
+  return await userDao.getUsers();
 };
 
-const logInUser = async (email, password) => {
-  const user = await userDao.logInUser(email, password);
+const findUser = async id => {
+  const isCreatedUser = await userDao.findUser(id);
+  const foundUser = isCreatedUser[Object.keys(isCreatedUser)[0]];
+  return foundUser;
+};
+
+const loginUser = async (email, password) => {
+  const user = await userDao.loginUser(email);
   if (user) {
     const validPassword = await bcrypt.compare(password, user.password);
     if (validPassword) {
@@ -21,13 +27,20 @@ const logInUser = async (email, password) => {
   }
 };
 
-const createUser = async (email, password, username, address, phone_number) => {
+const createUser = async userData => {
+  const { password } = userData;
   const hash = await bcrypt.hash(password, 10);
-  return await userDao.createUser(email, hash, username, address, phone_number);
+  return await userDao.createUser(userData, hash);
 };
 
-const checkUser = async () => {
-  return await userDao.checkUser();
+const deleteUser = async userId => {
+  return await userDao.deleteUser(userId);
 };
 
-export default { getUser, logInUser, createUser, checkUser };
+export default {
+  getUsers,
+  loginUser,
+  createUser,
+  findUser,
+  deleteUser,
+};

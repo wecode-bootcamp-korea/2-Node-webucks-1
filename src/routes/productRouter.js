@@ -1,21 +1,21 @@
 import express from 'express';
-const router = express.Router();
-import authMiddleware from '../middlewares/auth';
-
+import validateToken from '../middlewares/validateToken';
 import { productController } from '../controllers';
 
-router.get('/', productController.getProduct);
-router.get('/:id', productController.getProductOne);
-router.get('/:id/like', authMiddleware, productController.likeProduct);
-router.post('/:id/comment', authMiddleware, productController.commentProduct);
+const router = express.Router();
+
+router.get('/', validateToken, productController.getProducts);
+router.get('/:id', validateToken, productController.getProduct);
+router.get('/:id/like', validateToken, productController.likeProduct);
+router.post('/:id/comment', validateToken, productController.commentProduct);
 router.put(
   '/:id/comment/update',
-  authMiddleware,
+  validateToken,
   productController.updateCommentProduct
 );
-router.get(
+router.delete(
   '/:id/comment/delete',
-  authMiddleware,
+  validateToken,
   productController.deleteCommentProduct
 );
 

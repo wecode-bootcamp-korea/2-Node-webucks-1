@@ -1,29 +1,29 @@
 import { userService } from '../services';
 
-const getUser = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
-    const users = await userService.getUser();
+    const users = await userService.getUsers();
     res.status(201).json({
       message: 'SUCCESS',
-      data: users,
+      users,
     });
   } catch (err) {
     console.log(err);
   }
 };
 
-const logInUser = async (req, res) => {
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const token = await userService.logInUser(email, password);
+    const token = await userService.loginUser(email, password);
     if (!token) {
       res.status(401).json('PLEASE_CHECK_EMAIL_OR_PASSWORD');
     } else {
       res.cookie('user', token, {
         httpOnly: true,
       });
-      return res.status(201).json({
-        message: 'LOGIN_SUCCEED',
+      return res.status(200).json({
+        message: 'SUCCESS',
         token,
       });
     }
@@ -34,22 +34,16 @@ const logInUser = async (req, res) => {
 
 const createUser = async (req, res) => {
   try {
-    const { email, password, username, address, phone_number } = req.body;
-    const newUser = await userService.createUser(
-      email,
-      password,
-      username,
-      address,
-      phone_number
-    );
+    const userData = req.body;
+    const newUser = await userService.createUser(userData);
     if (!newUser) {
-      res.status(401).json({
-        message: 'EMAIL_ALREADY_EXIST',
+      res.status(400).json({
+        message: 'USER_ALREADY_EXIST',
       });
     } else {
       res.status(201).json({
         message: 'CREATED',
-        user: newUser,
+        newUser,
       });
     }
   } catch (err) {
@@ -57,16 +51,17 @@ const createUser = async (req, res) => {
   }
 };
 
-const checkUser = async (req, res) => {
+const deleteUser = async (req, res) => {
   try {
-    const users = await userService.checkUser();
+    const userId = req.decoded.id;
+    await userService.deleteUser(userId);
+    res.clearCookie('user');
     res.status(200).json({
-      message: 'VALID USER',
-      data: users,
+      message: 'DELETED',
     });
   } catch (err) {
     console.log(err);
   }
 };
 
-export default { getUser, logInUser, createUser, checkUser };
+export default { getUsers, loginUser, createUser, deleteUser };

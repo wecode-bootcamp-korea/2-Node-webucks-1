@@ -1,13 +1,11 @@
 import { categoryDao } from '../models';
 
 const getCategory = async () => {
-  const category = await categoryDao.getCategory();
-  return category;
+  return await categoryDao.getCategory();
 };
 
-const setCategory = async name => {
-  const category = await categoryDao.setCategory(name);
-  return category;
+const createCategory = async name => {
+  return await categoryDao.createCategory(name);
 };
 
-export default { getCategory, setCategory };
+export default { getCategory, createCategory };

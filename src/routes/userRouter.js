@@ -1,12 +1,12 @@
 import express from 'express';
-const router = express.Router();
-import authMiddleware from '../middlewares/auth';
-
+import validateToken from '../middlewares/validateToken';
 import { userController } from '../controllers';
 
-router.get('/', userController.getUser);
-router.post('/login', userController.logInUser);
+const router = express.Router();
+
+router.get('/', validateToken, userController.getUsers);
+router.post('/login', userController.loginUser);
 router.post('/signup', userController.createUser);
-router.get('/check', authMiddleware, userController.checkUser);
+router.delete('/delete', validateToken, userController.deleteUser);
 
 export default router;

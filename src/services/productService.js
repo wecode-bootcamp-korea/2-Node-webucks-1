@@ -1,42 +1,32 @@
 import { productDao } from '../models';
 
-const getProduct = async () => {
-  const product = await productDao.getProduct();
-  return product;
+const getProducts = async () => {
+  return await productDao.getProducts();
 };
 
-const getProductOne = async productId => {
-  const product = await productDao.getProductOne(productId);
-  return product;
+const getProduct = async productId => {
+  return await productDao.getProduct(productId);
 };
 
 const likeProduct = async (productId, userId) => {
-  const product = await productDao.likeProduct(productId, userId);
-  return product;
+  return await productDao.likeProduct(productId, userId);
 };
 
 const commentProduct = async (productId, userId, comment) => {
-  const product = await productDao.commentProduct(productId, userId, comment);
-  return product;
+  return await productDao.commentProduct(productId, userId, comment);
 };
 
 const updateCommentProduct = async (productId, userId, comment) => {
-  const product = await productDao.updateCommentProduct(
-    productId,
-    userId,
-    comment
-  );
-  return product;
+  return await productDao.updateCommentProduct(productId, userId, comment);
 };
 
 const deleteCommentProduct = async (productId, userId) => {
-  const product = await productDao.deleteCommentProduct(productId, userId);
-  return product;
+  return await productDao.deleteCommentProduct(productId, userId);
 };
 
 export default {
-  getProductOne,
   getProduct,
+  getProducts,
   likeProduct,
   commentProduct,
   updateCommentProduct,
