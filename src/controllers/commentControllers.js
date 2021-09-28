@@ -10,7 +10,9 @@ import {
 
 export const createComment = async (req, res, next) => {
   const {
-    locals: { userId },
+    locals: {
+      user: { id: userId },
+    },
   } = res;
 
   const {
@@ -18,20 +20,11 @@ export const createComment = async (req, res, next) => {
     body: { description },
   } = req;
 
-  console.log(coffeeId);
   if (coffeeId)
     if (!description.length) {
       res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
       return;
     }
-
-  if (!userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-    return;
-  }
 
   const data = await createCommentService(userId, coffeeId, description, next);
   res.json(data);
@@ -39,10 +32,6 @@ export const createComment = async (req, res, next) => {
 };
 
 export const updateComment = async (req, res, next) => {
-  const {
-    locals: { userId },
-  } = res;
-
   const {
     params: { id: commentId },
     body: { description },
@@ -53,13 +42,6 @@ export const updateComment = async (req, res, next) => {
     return;
   }
 
-  if (!userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-    return;
-  }
   const data = await updateCommentService(userId, commentId, description, next);
   res.json(data);
   return;
@@ -67,7 +49,9 @@ export const updateComment = async (req, res, next) => {
 
 export const deleteComment = async (req, res, next) => {
   const {
-    locals: { userId },
+    locals: {
+      user: { id: userId },
+    },
   } = res;
 
   const {
@@ -89,7 +73,9 @@ export const deleteComment = async (req, res, next) => {
 
 export const createRecomment = async (req, res, next) => {
   const {
-    locals: { userId },
+    locals: {
+      user: { id: userId },
+    },
   } = res;
 
   const {
@@ -105,13 +91,6 @@ export const createRecomment = async (req, res, next) => {
     return;
   }
 
-  if (!userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
   const data = await createRecommentService(
     userId,
     commentId,
@@ -125,18 +104,14 @@ export const createRecomment = async (req, res, next) => {
 
 export const createCommentlike = async (req, res, next) => {
   const {
-    locals: { userId },
+    locals: {
+      user: { id: userId },
+    },
   } = res;
+
   const {
     params: { id: commentId },
   } = req;
-
-  if (!userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
 
   const data = await createCommentLikeService(userId, commentId, next);
   res.json(data);
@@ -145,18 +120,14 @@ export const createCommentlike = async (req, res, next) => {
 
 export const deleteCommentLike = async (req, res, next) => {
   const {
-    locals: { userId },
+    locals: {
+      user: { id: userId },
+    },
   } = res;
+
   const {
     params: { id: commentId },
   } = req;
-
-  if (!userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
 
   const data = await deleteCommentLikeService(userId, commentId, next);
   res.json(data);

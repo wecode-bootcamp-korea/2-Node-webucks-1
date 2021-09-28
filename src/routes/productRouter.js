@@ -6,14 +6,14 @@ import {
   createLike,
   deleteLike,
 } from '../controllers/productControllers';
-import { authMiddleWare } from '../middleWares/authMiddleWare';
+import { onlyForLoginAndActiveUser } from '../middleWares/authMiddleWare';
 
 const router = express();
 
-router.get('/', authMiddleWare, getProducts);
+router.get('/', getProducts);
 router.get('/categories', getCategories);
-router.get('/:id', authMiddleWare, getProduct);
-router.post('/:id/like', authMiddleWare, createLike);
-router.delete('/:id/dislike', authMiddleWare, deleteLike);
+router.get('/:id', getProduct);
+router.post('/:id/like', onlyForLoginAndActiveUser, createLike);
+router.delete('/:id/dislike', onlyForLoginAndActiveUser, deleteLike);
 
 export default router;

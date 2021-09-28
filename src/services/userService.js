@@ -1,4 +1,9 @@
-import { createUser, findUserByEmail } from '../models/userDAO';
+import {
+  createUser,
+  findUserByEmail,
+  hardDeleteUser,
+  softDeleteUser,
+} from '../models/userDAO';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { ERRORS } from '../constances';
@@ -34,6 +39,7 @@ export const loginService = async (email, password, next) => {
   }
 
   const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
+
   if (!isPassCorrect) {
     return {
       ok: false,
@@ -50,4 +56,12 @@ export const loginService = async (email, password, next) => {
   }
 
   return { ok: true, token };
+};
+
+export const hardDeleteService = async (id, next) => {
+  return hardDeleteUser(id, next);
+};
+
+export const softDeleteService = async (id, next) => {
+  return softDeleteUser(id, next);
 };

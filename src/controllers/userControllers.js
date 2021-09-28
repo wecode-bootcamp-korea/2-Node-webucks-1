@@ -1,5 +1,10 @@
 import { ERRORS } from '../constances';
-import { joinService, loginService } from '../services/userService';
+import {
+  hardDeleteService,
+  joinService,
+  loginService,
+  softDeleteService,
+} from '../services/userService';
 import { isValid } from '../utils';
 
 export const joinController = async (req, res, next) => {
@@ -34,4 +39,21 @@ export const loginControllser = async (req, res, next) => {
   const result = await loginService(email, password, next);
   res.json(result);
   return;
+};
+
+export const hardDeleteController = async (req, res, next) => {
+  const {
+    params: { id },
+  } = req;
+
+  const data = await hardDeleteService(id, next);
+  return res.json(data);
+};
+
+export const softDeleteController = async (req, res, next) => {
+  const {
+    params: { id },
+  } = req;
+  const data = await softDeleteService(id, next);
+  return res.json(data);
 };

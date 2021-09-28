@@ -8,3 +8,9 @@ export const ERRORS = {
   DUPLICATE: name => `${name} 이미 했습니다.`,
   WRONGREQ: '잘못된 요청입니다.',
 };
+
+export const ROLES = {
+  MANAGER: 'manager',
+  ACTIVEUSER: 'auth_user',
+  DELETEDUSER: 'delete_user',
+};

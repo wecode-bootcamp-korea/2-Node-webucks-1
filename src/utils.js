@@ -15,20 +15,18 @@ export const isValid = (email, password) => {
 };
 
 export const isItemExist = item => {
-  if (typeof item === 'object') {
-    switch (Array.isArray(item)) {
-      case true:
-        return Array.isArray(item) && !!item.length;
+  switch (Array.isArray(item)) {
+    case true:
+      return Array.isArray(item) && !!item.length;
 
-      default:
-        let signal = true;
-        for (let keys in item) {
-          if (!item[keys]) {
-            signal = false;
-          }
+    default:
+      let signal = true;
+      for (let keys in item) {
+        if (!item[keys]) {
+          signal = false;
         }
-        return signal;
-    }
+      }
+      return signal;
   }
 };
 
@@ -57,7 +55,7 @@ export const addAmILike = (array, userId) => {
 };
 
 export const isBlackList = param => {
-  const blackWords = ['join', 'insert', 'alter', 'drop', 'select'];
+  const blackWords = ['join', 'insert', 'alter', 'drop', 'select', 'union'];
 
   for (let item of blackWords) {
     if (param.includes(item)) return true;

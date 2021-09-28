@@ -1,5 +1,5 @@
 import client from '.';
-import { ERRORS } from '../constances';
+import { ERRORS, ROLES } from '../constances';
 
 export const findUserByEmail = async (email, next) => {
   try {
@@ -22,8 +22,7 @@ export const createUser = async (email, password, nickName = '익명', next) => 
       users(
         email,
         password,
-        nick_name,
-        updated_at
+        nick_name
         ) 
     VALUES(
       ${email},
@@ -73,5 +72,38 @@ export const auth = async (id, next) => {
       ok: true,
       data: me,
     };
+  }
+};
+
+export const softDeleteUser = async (id, next) => {
+  try {
+    await client.user.update({
+      where: {
+        id,
+      },
+      data: {
+        role: ROLES.DELETEDUSER,
+      },
+    });
+    return {
+      ok: true,
+    };
+  } catch (e) {
+    next(e);
+  }
+};
+
+export const hardDeleteUser = async (id, next) => {
+  try {
+    client.user.delete({
+      where: {
+        id,
+      },
+    });
+    return {
+      ok: true,
+    };
+  } catch (e) {
+    next(e);
   }
 };

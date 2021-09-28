@@ -27,6 +27,8 @@ model User {
   email       String        @unique
   password    String
   nickName    String?       @unique @map("nick_name")
+  role        String        @default("active_user")
+  deletedAt   DateTime?
   comment     Comment[]
   coffeeLike  CoffeeLike[]
   commentLike CommentLike[]

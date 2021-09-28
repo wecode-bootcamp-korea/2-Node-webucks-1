@@ -1,4 +1,3 @@
-import { ERRORS } from '../constances';
 import {
   createComment,
   createCommentlike,
@@ -8,15 +7,10 @@ import {
   findCommentByIds,
   updateComment,
 } from '../models/commentDAO';
+import { ERRORS } from '../constances';
 import { findProductById } from '../models/productDAO';
-import { auth } from '../models/userDAO';
 
-export const createCommentService = async (
-  userId,
-  coffeeId,
-  description,
-  next
-) => {
+export const createCommentService = async (coffeeId, description, next) => {
   const isCoffeeExist = await findProductById(coffeeId, next);
 
   if (!isCoffeeExist.length) {
@@ -25,8 +19,6 @@ export const createCommentService = async (
       error: ERRORS.NOITEM(),
     };
   }
-
-  const isAuth = await auth(userId, next);
 
   const createdComment = await createComment(
     userId,
@@ -37,7 +29,7 @@ export const createCommentService = async (
 
   createdComment.data.nick_name = createdComment.data.nick_name || '익명';
 
-  return !isAuth.ok ? auth(userId, next) : createdComment;
+  return createdComment;
 };
 
 export const updateCommentService = async (
@@ -46,31 +38,21 @@ export const updateCommentService = async (
   description,
   next
 ) => {
-  const isAuth = await auth(userId, next);
-  if (!isAuth.ok) {
-    return isAuth;
-  }
-
   const isCommentExist = await findCommentByIds(userId, commentId, next);
+
   if (!isCommentExist.length) {
     res.status(404).json({
       ok: false,
       error: ERRORS.NOITEM('댓글이'),
     });
   }
+
   return updateComment(commentId, description, next);
 };
 
 export const deleteCommentService = async (userId, commentId, next) => {
-  const isAuth = await auth(userId, next);
-  if (!isAuth.ok) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
   const commentExist = await findCommentByIds(userId, commentId, next);
+
   if (!commentExist.length) {
     res.status(404).json({
       ok: false,
@@ -87,28 +69,10 @@ export const createRecommentService = async (
   description,
   next
 ) => {
-  const isAuth = await auth(userId, next);
-
-  if (!isAuth.ok) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
   return createRecomment(userId, commentId, description, next);
 };
 
 export const createCommentLikeService = async (userId, commentId, next) => {
-  const isAuth = await auth(userId, next);
-
-  if (!isAuth.ok) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
   const isCommentExist = await findCommentByIds(userId, commentId, next);
 
   if (!isCommentExist.length) {
@@ -122,8 +86,5 @@ export const createCommentLikeService = async (userId, commentId, next) => {
 };
 
 export const deleteCommentLikeService = async (userId, commentId, next) => {
-  const isAuth = await auth(userId, next);
-  if (!isAuth.ok) return isAuth;
-
   return deleteCommentLike(userId, commentId, next);
 };

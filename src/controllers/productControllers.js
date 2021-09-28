@@ -1,4 +1,3 @@
-import { ERRORS } from '../constances';
 import {
   createLikeService,
   getCategoriesService,
@@ -13,69 +12,58 @@ export const getCategories = async (req, res) => {
   return;
 };
 
-export const getProducts = async (req, res, next) => {
+export const getProducts = async (req, res) => {
   const {
-    locals: { userId },
+    locals: { user },
   } = res;
 
   const {
     query: { offset },
   } = req;
 
-  const data = await getProductsService(offset, userId);
+  const data = await getProductsService(offset, user?.userId);
   res.json(data);
   return;
 };
 
 export const getProduct = async (req, res, next) => {
   const {
-    query: { offset },
+    locals: { user },
+  } = res;
+
+  const {
     params: { id },
   } = req;
 
-  const {
-    locals: { userId },
-  } = res;
-
-  const data = await getProductService(id, userId, next, offset);
+  const data = await getProductService(id, user?.userId, next);
   res.json(data);
   return;
 };
 
 export const createLike = async (req, res, next) => {
-  const { locals } = res;
+  const {
+    locals: { user },
+  } = res;
 
   const {
     params: { id: coffeeId },
   } = req;
 
-  if (!locals.userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
-  const data = await createLikeService(locals.userId, coffeeId, next);
+  const data = await createLikeService(user?.userId, coffeeId, next);
   res.json(data);
   return;
 };
 
 export const deleteLike = async (req, res, next) => {
-  const { locals } = res;
+  const {
+    locals: { user },
+  } = res;
 
   const {
     params: { id: coffeeId },
   } = req;
 
-  if (!locals.userId) {
-    res.status(403).json({
-      ok: false,
-      error: ERRORS.UNAUTH,
-    });
-  }
-
-  const data = await deleteLikeService(locals.userId, coffeeId, next);
+  const data = await deleteLikeService(user?.userId, coffeeId, next);
   res.json(data);
   return;
 };
