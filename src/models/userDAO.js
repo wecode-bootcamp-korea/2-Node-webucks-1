@@ -83,6 +83,7 @@ export const softDeleteUser = async (id, next) => {
       },
       data: {
         role: ROLES.DELETEDUSER,
+        deletedAt: new Date(),
       },
     });
     return {
