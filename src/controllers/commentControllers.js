@@ -20,11 +20,10 @@ export const createComment = async (req, res, next) => {
     body: { description },
   } = req;
 
-  if (coffeeId)
-    if (!description.length) {
-      res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
-      return;
-    }
+  if (!description.length) {
+    res.status(400).json({ ok: false, error: ERRORS.NOPARAMS });
+    return;
+  }
 
   const data = await createCommentService(userId, coffeeId, description, next);
   res.json(data);
@@ -108,11 +107,10 @@ export const createCommentlike = async (req, res, next) => {
       user: { id: userId },
     },
   } = res;
-
   const {
     params: { id: commentId },
   } = req;
-
+  console.log(userId, commentId);
   const data = await createCommentLikeService(userId, commentId, next);
   res.json(data);
   return;

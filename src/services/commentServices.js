@@ -10,7 +10,12 @@ import {
 import { ERRORS } from '../constances';
 import { findProductById } from '../models/productDAO';
 
-export const createCommentService = async (coffeeId, description, next) => {
+export const createCommentService = async (
+  userId,
+  coffeeId,
+  description,
+  next
+) => {
   const isCoffeeExist = await findProductById(coffeeId, next);
 
   if (!isCoffeeExist.length) {
@@ -41,10 +46,10 @@ export const updateCommentService = async (
   const isCommentExist = await findCommentByIds(userId, commentId, next);
 
   if (!isCommentExist.length) {
-    res.status(404).json({
+    return {
       ok: false,
       error: ERRORS.NOITEM('댓글이'),
-    });
+    };
   }
 
   return updateComment(commentId, description, next);
@@ -52,12 +57,11 @@ export const updateCommentService = async (
 
 export const deleteCommentService = async (userId, commentId, next) => {
   const commentExist = await findCommentByIds(userId, commentId, next);
-
   if (!commentExist.length) {
-    res.status(404).json({
+    return {
       ok: false,
       error: ERRORS.NOITEM('댓글이'),
-    });
+    };
   }
 
   return deleteComment(commentId, next);
@@ -76,10 +80,10 @@ export const createCommentLikeService = async (userId, commentId, next) => {
   const isCommentExist = await findCommentByIds(userId, commentId, next);
 
   if (!isCommentExist.length) {
-    res.status(404).json({
+    return {
       ok: false,
       error: ERRORS.NOITEM('댓글이'),
-    });
+    };
   }
 
   return createCommentlike(userId, commentId, next);

@@ -21,7 +21,7 @@ export const authMiddleWare = (req, res, next) => {
   }
 
   auth(id, next).then(response => {
-    if (response.ok) res.locals.user = response.data;
+    if (response.ok) res.locals.user = response.data[0];
     return next();
   });
 };
