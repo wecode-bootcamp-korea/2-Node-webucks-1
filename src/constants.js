@@ -9,8 +9,24 @@ export const ERRORS = {
   WRONGREQ: '잘못된 요청입니다.',
 };
 
+export const SUCCESS = {
+  CREATE: 'CREATE',
+  UPDATE: 'UPDATE',
+  DELETE: 'DELETE',
+};
+
 export const ROLES = {
   MANAGER: 'manager',
   ACTIVEUSER: 'auth_user',
   DELETEDUSER: 'delete_user',
+};
+
+export const errorHandler = {
+  wrapper: fun => (terms, next) => {
+    try {
+      return fun(terms, next);
+    } catch (e) {
+      next(e);
+    }
+  },
 };

@@ -4,39 +4,21 @@ import {
   hardDeleteUser,
   softDeleteUser,
 } from '../models/userDAO';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import { ERRORS } from '../constances';
+import { sign } from 'jsonwebtoken';
+import { hash, compare } from 'bcrypt';
+import { errorHandler, ERRORS } from '../constants';
+import { joinUserProcess } from '../utils';
 
-export const joinService = async (email, password, nickName, next) => {
-  const isExist = await findUserByEmail(email, next);
+export const joinUserService = errorHandler.wrapper(async (body, next) => {
+  const { email } = body;
+  const isUserExist = await findUserByEmail(email, next);
 
-  if (isExist.length) {
-    return {
-      ok: false,
-      error: ERRORS.EXIST,
-    };
-  }
+  return joinUserProcess(createUser)(hash)(body, isUserExist, next);
+});
 
-  let hashedPassword;
-
-  try {
-    hashedPassword = await bcrypt.hash(password, 10);
-  } catch (e) {
-    next(e);
-  }
-
-  return createUser(email, hashedPassword, nickName, next);
-};
-
-export const loginService = async (email, password, next) => {
-  const existUser = await findUserByEmail(email, next);
-  if (!existUser.length) {
-    return {
-      ok: false,
-      error: ERRORS.INVALID,
-    };
-  }
+export const loginUserService = async (terms, next) => {
+  const { email } = terms;
+  const isUserExist = await findUserByEmail(email, next);
 
   const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
 

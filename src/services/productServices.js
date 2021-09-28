@@ -1,4 +1,4 @@
-import { ERRORS } from '../constances';
+import { ERRORS } from '../constants';
 import {
   authFindManyProducts,
   createLike,

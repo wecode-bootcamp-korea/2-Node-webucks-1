@@ -1,3 +1,6 @@
+import { ERRORS } from './constants';
+import { loginUser } from './controllers/userController';
+
 const emailValid = id => {
   const regExp =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
@@ -10,7 +13,8 @@ const passwordValid = pw => {
   return regExp.test(pw);
 };
 
-export const isValid = (email, password) => {
+export const isValid = terms => {
+  const { email, password } = terms;
   return emailValid(email) && passwordValid(password);
 };
 
@@ -63,3 +67,34 @@ export const isBlackList = param => {
 
   return false;
 };
+
+export const checkTermsValid = fun => (terms, next) =>
+  isValid(terms) ? fun(terms, next) : { error: ERRORS.INVALID };
+
+export const returnErrorOrSuccess = fun => (result, statusCode) => {
+  return result.error ? fun(result, statusCode) : fun(result);
+};
+
+export const joinUserProcess =
+  createUser => hash => async (body, isUserExist, next) => {
+    const { nickName, email, password } = body;
+
+    if (!isUserExist.length) {
+      const hashedPassword = await hash(password, 10);
+      const user = await createUser({ nickName, email, hashedPassword }, next);
+      delete user.password;
+      return user;
+    } else {
+      return { error: ERRORS.EXIST };
+    }
+  };
+
+export const loginUserProcess =
+  loginUser => compaire => async (body, isUserExist, next) => {
+    const { email, password } = body;
+
+    if (isUserExist.length) {
+      compaire(password, isUserExist[0].password);
+      return loginUser(body, next);
+    }
+  };

@@ -1,16 +1,16 @@
 import express from 'express';
 import {
   hardDeleteController,
-  joinController,
-  loginControllser,
+  joinUser,
+  loginUser,
   softDeleteController,
-} from '../controllers/userControllers';
+} from '../controllers/userController';
 import { onlyForManager } from '../middleWares/authMiddleWare';
 
 const router = express();
 router.delete('/hard-delete', onlyForManager, hardDeleteController);
 router.put('/soft-delete', onlyForManager, softDeleteController);
-router.post('/join', joinController);
-router.post('/login', loginControllser);
+router.post('/join', joinUser);
+router.post('/login', loginUser);
 
 export default router;

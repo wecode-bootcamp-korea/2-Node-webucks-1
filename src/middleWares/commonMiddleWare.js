@@ -1,7 +1,7 @@
-import { ERRORS } from '../constances';
+import { ERRORS } from '../constants';
 import { isBlackList } from '../utils';
 
-export const commonMiddleWare = (req, res, next) => {
+export const preventSqlInjectionMiddleWare = (req, res, next) => {
   const { params, body, query } = req;
 
   let isBlack = false;

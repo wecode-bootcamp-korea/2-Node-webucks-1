@@ -5,7 +5,7 @@ import {
   getProducts,
   createLike,
   deleteLike,
-} from '../controllers/productControllers';
+} from '../controllers/product';
 import { onlyForLoginAndActiveUser } from '../middleWares/authMiddleWare';
 
 const router = express();

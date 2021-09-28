@@ -7,7 +7,7 @@ import {
   findCommentByIds,
   updateComment,
 } from '../models/commentDAO';
-import { ERRORS } from '../constances';
+import { ERRORS } from '../constants';
 import { findProductById } from '../models/productDAO';
 
 export const createCommentService = async (

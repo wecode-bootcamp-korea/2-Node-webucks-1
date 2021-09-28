@@ -5,7 +5,7 @@ import {
   deleteComment,
   deleteCommentLike,
   updateComment,
-} from '../controllers/commentControllers';
+} from '../controllers/comment';
 
 const router = express();
 

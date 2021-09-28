@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
-import { ERRORS, ROLES } from '../constances';
+import { ERRORS, ROLES } from '../constants';
 import { auth } from '../models/userDAO';
 
-export const authMiddleWare = (req, res, next) => {
+export const commonAuthMiddleWare = (req, res, next) => {
   const {
     headers: { authorization },
   } = req;
@@ -42,6 +42,7 @@ export const onlyForManager = (req, res, next) => {
   const {
     locals: { user },
   } = res;
+
   if (user && user.role === ROLES.MANAGER) {
     return next();
   } else {

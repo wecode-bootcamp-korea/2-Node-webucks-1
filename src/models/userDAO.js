@@ -1,10 +1,15 @@
+import { SUCCESS } from '../constants';
 import client from '.';
-import { ERRORS, ROLES } from '../constances';
+import { errorHandler, ERRORS, ROLES } from '../constants';
 
 export const findUserByEmail = async (email, next) => {
   try {
     return client.$queryRaw`
-    SELECT * 
+    SELECT 
+      u.email,
+      u.created_at,
+      u.nick_name,
+      u.password
     FROM 
       users u 
     WHERE 
@@ -15,8 +20,8 @@ export const findUserByEmail = async (email, next) => {
   }
 };
 
-export const createUser = async (email, password, nickName = '익명', next) => {
-  try {
+export const createUser = errorHandler.wrapper(
+  async ({ email, hashedPassword, nickName = null }, next) => {
     await client.$queryRaw`
     INSERT INTO 
       users(
@@ -26,26 +31,16 @@ export const createUser = async (email, password, nickName = '익명', next) => 
         ) 
     VALUES(
       ${email},
-      ${password},
+      ${hashedPassword},
       ${nickName}
       );
     `;
 
-    const data = await findUserByEmail(email, next);
+    const user = await findUserByEmail(email, next);
 
-    if (data.length) {
-      delete data[0].password;
-      delete data[0].id;
-      delete data[0].updated_at;
-    }
-    return {
-      ok: true,
-      ...(Array.isArray(data) ? { data: data[0] } : { data }),
-    };
-  } catch (e) {
-    next(e);
+    return { message: SUCCESS.CREATE, user: user[0] };
   }
-};
+);
 
 export const findUserById = async (id, next) => {
   try {
