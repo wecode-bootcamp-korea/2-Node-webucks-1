@@ -2,16 +2,19 @@ import { productService } from '../services';
 
 const getProduct = async (req, res) => {
   const product = await productService.getProduct();
-
-  res.json(product);
+  res.status(200).json({
+    message: 'SUCCESS',
+    data: product,
+  });
 };
 
 const getProductOne = async (req, res) => {
   const id = req.params.id;
-
   const product = await productService.getProductOne(id);
-
-  res.json(product);
+  res.status(200).json({
+    message: 'SUCCESS',
+    data: product,
+  });
 };
 
 const likeProduct = async (req, res) => {
@@ -64,6 +67,7 @@ const updateCommentProduct = async (req, res) => {
 const deleteCommentProduct = async (req, res) => {
   const productId = req.params.id;
   const userId = req.decoded.id;
+
   try {
     await productService.deleteCommentProduct(productId, userId);
     res.status(201).json({

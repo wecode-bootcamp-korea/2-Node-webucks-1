@@ -13,14 +13,12 @@ const getProduct = async () => {
 };
 
 const getProductOne = async productId => {
-  const id = productId;
-
   const product = await prisma.$queryRaw`
   SELECT p.id, p.korean_name, p.english_name, i.image_url
   FROM products p
   JOIN images i
   ON i.product_id = p.id
-  WHERE p.id=${id}
+  WHERE p.id=${productId}
   `;
   return product;
 };
@@ -44,24 +42,43 @@ const commentProduct = async (productId, userId, comment) => {
   await prisma.$queryRaw`
     INSERT INTO comments (contents, product_id, user_id) VALUE (${comment},${productId}, ${userId})
   `;
-  const [comments] = await prisma.$queryRaw`
-  SELECT * from comments;
+  const comments = await prisma.$queryRaw`
+  SELECT id, contents, user_id, product_id
+  FROM comments
+  ORDER BY comments.id;
   `;
   return comments;
 };
 
 const updateCommentProduct = async (productId, userId, comment) => {
   await prisma.$queryRaw`
-  update comments set contents=${comment}, updated_at=now() where product_id=${productId} and user_id=${userId};
+  UPDATE comments 
+  SET 
+    contents=${comment}, 
+    updated_at=now()
+  WHERE 
+    product_id=${productId} 
+  AND 
+    user_id=${userId};
   `;
-  const [comments] = await prisma.$queryRaw`
-  SELECT * from comments;
+  const comments = await prisma.$queryRaw`
+  SELECT id, contents, user_id, product_id
+  FROM comments
+  ORDER BY comments.id;
   `;
   return comments;
 };
 
 const deleteCommentProduct = async (productId, userId) => {
-  return await prisma.$queryRaw`delete from comments where product_id=${productId} and user_id=${userId}`;
+  return await prisma.$queryRaw`
+  UPDATE comments 
+  SET 
+    deleted_at=now(), 
+    is_deleted=true 
+  WHERE 
+    product_id=${productId} 
+  AND 
+    user_id=${userId};`;
 };
 
 export default {

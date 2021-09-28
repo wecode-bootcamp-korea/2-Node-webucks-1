@@ -2,7 +2,10 @@ import { categoryServices } from '../services';
 
 const getCategory = async (req, res) => {
   const category = await categoryServices.getCategory();
-  res.json(category);
+  res.status(200).json({
+    message: 'SUCCESS',
+    data: category,
+  });
 };
 
 const setCategory = async (req, res) => {

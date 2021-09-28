@@ -17,13 +17,13 @@ const logInUser = async (req, res) => {
     const { email, password } = req.body;
     const token = await userService.logInUser(email, password);
     if (!token) {
-      res.status(401).json('PLEASE CHECK EMAIL OR PASSWORD');
+      res.status(401).json('PLEASE_CHECK_EMAIL_OR_PASSWORD');
     } else {
       res.cookie('user', token, {
         httpOnly: true,
       });
       return res.status(201).json({
-        message: 'LOGIN SUCCEED',
+        message: 'LOGIN_SUCCEED',
         token,
       });
     }
@@ -44,7 +44,7 @@ const createUser = async (req, res) => {
     );
     if (!newUser) {
       res.status(401).json({
-        message: 'EMAIL ALREADY EXIST',
+        message: 'EMAIL_ALREADY_EXIST',
       });
     } else {
       res.status(201).json({
@@ -60,7 +60,7 @@ const createUser = async (req, res) => {
 const checkUser = async (req, res) => {
   try {
     const users = await userService.checkUser();
-    res.status(201).json({
+    res.status(200).json({
       message: 'VALID USER',
       data: users,
     });
