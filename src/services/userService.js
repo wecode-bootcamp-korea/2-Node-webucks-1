@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { userModel } from '../models';
+import { productModel } from '../models';
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
@@ -15,7 +16,7 @@ const login = async userLoginData => {
 
   if (result) {
     return user;
-  } else throw new error('invalid user');
+  } else throw new Error('INVALID USER');
 };
 
 const createToken = async user => {
@@ -24,6 +25,9 @@ const createToken = async user => {
 };
 
 const makeUser = async userSignupData => {
+  const joinedUser = await userModel.findUserByEmail(userSignupData.email);
+  if (joinedUser) throw new Error('ALREADY EXIST USER ');
+
   const encryptedPw = await bcrypt.hash(userSignupData.password, 10);
   userSignupData.password = encryptedPw;
   const user = await userModel.makeUser(userSignupData);
@@ -34,6 +38,11 @@ const updateProductLike = async (token, productId) => {
   const decoded = jwt.verify(token, SECRET_KEY);
   const user = await userModel.findUserByEmail(decoded.email);
   const like = await userModel.getLike(user.id, productId);
+  const product = await productModel.getProduct(productId);
+
+  if (!user) throw new Error('INVALID USER');
+  if (!product) throw new Error('INVALID PRODUCT');
+
   if (like) {
     return await userModel.unlikeProduct(user.id, productId);
   } else {
