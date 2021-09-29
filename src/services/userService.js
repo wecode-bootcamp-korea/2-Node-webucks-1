@@ -1,18 +1,17 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
 import { userModel } from '../models';
 
-dotenv.config();
 const SECRET_KEY = process.env.SECRET_KEY;
+
 const getUser = async () => {
   const users = await userModel.getUser();
   return users;
 };
 
 const login = async (email, password) => {
-  const user = await userModel.login(email);
-  const result = await bcrypt.compare(password, user[0].password);
+  const user = await userModel.findUserByEmail(email);
+  const result = await bcrypt.compare(password, user.password);
 
   if (result) {
     return user;
@@ -20,12 +19,7 @@ const login = async (email, password) => {
 };
 
 const createToken = async user => {
-  const token = jwt.sign(
-    {
-      email: user.email,
-    },
-    SECRET_KEY
-  );
+  const token = jwt.sign({ email: user.email }, SECRET_KEY);
   return token;
 };
 
@@ -50,4 +44,15 @@ const setUser = async (
   return user;
 };
 
-export default { getUser, setUser, login, createToken };
+const updateProductLike = async (token, productId) => {
+  const decoded = jwt.verify(token, SECRET_KEY);
+  const user = await userModel.findUserByEmail(decoded.email);
+  const like = await userModel.getLike(user.id, productId);
+  if (like) {
+    return await userModel.unlikeProduct(user.id, productId);
+  } else {
+    return await userModel.likeProduct(user.id, productId);
+  }
+};
+
+export default { getUser, setUser, login, createToken, updateProductLike };

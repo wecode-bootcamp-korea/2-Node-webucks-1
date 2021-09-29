@@ -31,4 +31,11 @@ const setUser = async (req, res) => {
   res.json(user);
 };
 
-export default { getUser, setUser, login };
+const updateProductLike = async (req, res) => {
+  const { productId } = req.body;
+  const token = req.cookies.user;
+  const like = await userService.updateProductLike(token, productId);
+  res.json(like);
+};
+
+export default { getUser, setUser, login, updateProductLike };
