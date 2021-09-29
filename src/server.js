@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import prisma from '../prisma/index';
-import router from '../routes';
+import router from '../src/routes/index';
 
 dotenv.config();
 const app = express();
