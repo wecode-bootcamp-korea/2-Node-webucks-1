@@ -13,7 +13,10 @@ const router = express();
 router.get('/', getProducts);
 router.get('/categories', getCategories);
 router.get('/:id', getProduct);
-router.post('/:id/like', onlyForLoginAndActiveUser, createLike);
-router.delete('/:id/dislike', onlyForLoginAndActiveUser, deleteLike);
+
+router
+  .all(onlyForLoginAndActiveUser)
+  .post('/:id/like', createLike)
+  .delete('/:id/like', deleteLike);
 
 export default router;

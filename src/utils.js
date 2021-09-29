@@ -71,30 +71,11 @@ export const isBlackList = param => {
 export const checkTermsValid = fun => (terms, next) =>
   isValid(terms) ? fun(terms, next) : { error: ERRORS.INVALID };
 
-export const returnErrorOrSuccess = fun => (result, statusCode) => {
+export const resResultHandler = fun => (result, statusCode) => {
   return result.error ? fun(result, statusCode) : fun(result);
 };
 
-export const joinUserProcess =
-  createUser => hash => async (body, isUserExist, next) => {
-    const { nickName, email, password } = body;
-
-    if (!isUserExist.length) {
-      const hashedPassword = await hash(password, 10);
-      const user = await createUser({ nickName, email, hashedPassword }, next);
-      delete user.password;
-      return user;
-    } else {
-      return { error: ERRORS.EXIST };
-    }
-  };
-
-export const loginUserProcess =
-  loginUser => compaire => async (body, isUserExist, next) => {
-    const { email, password } = body;
-
-    if (isUserExist.length) {
-      compaire(password, isUserExist[0].password);
-      return loginUser(body, next);
-    }
-  };
+export const ifOk = fun => args => {
+  const { isOk, arg } = args;
+  if (isOk) return fun(...arg);
+};

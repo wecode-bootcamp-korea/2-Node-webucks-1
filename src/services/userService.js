@@ -4,35 +4,38 @@ import {
   hardDeleteUser,
   softDeleteUser,
 } from '../models/userDAO';
-import { sign } from 'jsonwebtoken';
 import { hash, compare } from 'bcrypt';
 import { errorHandler, ERRORS } from '../constants';
-import { joinUserProcess } from '../utils';
+import { ifOk } from '../utils';
 
-export const joinUserService = errorHandler.wrapper(async (body, next) => {
+export const joinService = errorHandler.wrapper(async (body, next) => {
   const { email } = body;
   const isUserExist = await findUserByEmail(email, next);
 
-  return joinUserProcess(createUser)(hash)(body, isUserExist, next);
+  if (isUserExist.length) body.password = await hash(body.password);
+
+  return !!isUserExist.length
+    ? createUser(body, next)
+    : { error: ERRORS.EXIST };
 });
 
-export const loginUserService = async (terms, next) => {
-  const { email } = terms;
-  const isUserExist = await findUserByEmail(email, next);
+export const loginService = async (body, next) => {
+  const { email } = body;
+  const user = await findUserByEmail(email, next);
+  const args = {
+    isOk: !!user.length,
+    arg: [password, user[0].password],
+  };
 
-  const isPassCorrect = await bcrypt.compare(password, existUser[0].password);
-
-  if (!isPassCorrect) {
-    return {
-      ok: false,
-      error: ERRORS.INVALID,
-    };
+  const isPwOk = await ifOk(compare)(args);
+  if (isPwOk) {
   }
+
+  return { error: ERRORS.INVALID };
 
   let token;
 
   try {
-    token = jwt.sign({ id: existUser[0].id }, process.env.SECRET);
   } catch (e) {
     next(e);
   }

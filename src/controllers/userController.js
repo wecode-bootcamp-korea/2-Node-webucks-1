@@ -1,22 +1,21 @@
-import { ERRORS } from '../constants';
 import {
   hardDeleteService,
   softDeleteService,
-  joinUserService,
-  loginUserService,
+  joinService,
+  loginService,
 } from '../services/userService';
-import { checkTermsValid, isValid, returnErrorOrSuccess } from '../utils';
+import { checkTermsValid, resResultHandler } from '../utils';
 
-export const joinUser = async (req, res, next) => {
+export const join = async (req, res, next) => {
   const { body } = req;
-  const result = await checkTermsValid(joinUserService)(body, next);
-  const fun = (result, code) => res.status(code || 201).json(result);
-  returnErrorOrSuccess(fun)(result, 401);
+  const joinResult = await checkTermsValid(joinService)(body, next);
+  const resResult = (result, code) => res.status(code || 201).json(result);
+  resResultHandler(resResult)(joinResult, 401);
 };
 
-export const loginUser = async (req, res, next) => {
+export const login = async (req, res, next) => {
   const { body } = req;
-  const result = await checkTermsValid(loginUserService)(body, next);
+  const result = await checkTermsValid(loginService)(body, next);
   res.json(result);
 };
 
