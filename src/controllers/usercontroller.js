@@ -18,18 +18,24 @@ const logInUser = async (req, res) => {
 };
 
 const setUser = async (req, res) => {
-  const { email, password, username, address, phoneNumber, policyAgreed } =
-    req.body;
-  const setUserData = {
-    email,
-    password,
-    username,
-    address,
-    phoneNumber,
-    policyAgreed,
-  };
-  const user = await userService.setUser(setUserData);
-  res.json(user);
+  try {
+    const { email, password, username, address, phoneNumber, policyAgreed } =
+      req.body;
+    const setUserData = await userService.setUser(
+      email,
+      password,
+      username,
+      address,
+      phoneNumber,
+      policyAgreed
+    );
+    res.status(201).json({ message: setUserData });
+  } catch (err) {
+    res.status(400).json({
+      status: 'failed',
+      message: `${err.message}`,
+    });
+  }
 };
 
 export default { getUser, logInUser, setUser };

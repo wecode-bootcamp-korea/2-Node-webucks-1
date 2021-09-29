@@ -3,7 +3,9 @@ import prisma from '../client';
 const getProduct = async () => {
   const product = await prisma.$queryRaw(`
   SELECT p.id, p.korean_name, p.english_name, p.category_id
-  FROM products p;`);
+  FROM products p;
+  JOIN categories c
+  ON c.id = p.category_id`);
 
   return product;
 };
