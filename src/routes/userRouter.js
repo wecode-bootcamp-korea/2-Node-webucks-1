@@ -1,8 +1,9 @@
 import express from 'express';
-import userController from '../controllers/userController'; // 라우터는 ~Controller에만 의존
+import { userController } from '../controllers'; // 라우터는 ~Controller에만 의존
 const router = express.Router();
 
 router.get('/', userController.getUser);
-router.post('/fix_user', userController.setUser);
+router.post('/login', userController.logInUser);
+router.post('/signup', userController.setUser);
 
-export default userRouter;
+export default router;

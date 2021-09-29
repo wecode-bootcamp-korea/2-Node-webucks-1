@@ -1,4 +1,4 @@
-import categoryModel from '../models/categoryModel';
+import { categoryModel } from '../models';
 
 const getCategory = async () => {
   const category = await categoryModel.getCategory();
@@ -6,8 +6,8 @@ const getCategory = async () => {
   return category;
 };
 
-const setCategory = async () => {
-  const category = await categoryModel.setCategory();
+const setCategory = async name => {
+  const category = await categoryModel.setCategory(name);
 
   return category;
 };

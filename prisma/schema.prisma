@@ -78,6 +78,8 @@ model ProductAllergy {
 
 model User {
   id           Int     @id @default(autoincrement())
+  // createdAt    DateTime @default(now()) @map("created_at")
+  // updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
   email        String  @unique
   password     String
   username     String?

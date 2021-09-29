@@ -1,4 +1,4 @@
-import prisma from './client';
+import prisma from '../client';
 
 const getCategory = async () => {
   const category = await prisma.$queryRaw`
@@ -7,16 +7,16 @@ const getCategory = async () => {
   return category;
 };
 
-const setCategory = async () => {
-  await prisma.$queryRaw`
+const setCategory = async name => {
+  await prisma.$queryRaw(`
   INSERT INTO categories (name)
-  VALUES (클램차우더");`;
+  VALUES (${name});`);
 
-  const [category] = await prisma.$queryRaw`
+  const [category] = await prisma.$queryRaw(`
   SELECT c.id, c.name
   FROM categories c
   ORDER BY id DESC
-  LIMIT 1;`;
+  LIMIT 1;`);
 
   return category;
 };

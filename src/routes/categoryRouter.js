@@ -1,8 +1,10 @@
 import express from 'express';
-import categoryController from '../controllers/categoryController'; // 라우터는 categoryController에만 의존
+import { categoryController } from '../controllers';
 const router = express.Router();
 
-router.get('/', categoryController.getCategory);
-router.post('/fix_category', categoryController.setCategory);
+// console.log(categoryController);
 
-export default categoryRouter;
+router.get('/', categoryController.getCategory);
+router.post('/fix', categoryController.setCategory);
+
+export default router;

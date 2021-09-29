@@ -1,14 +1,14 @@
-import productModel from '../models/productModel';
+import { productModel } from '../models';
 
 const getProduct = async () => {
   const product = await productModel.getProduct();
   return product;
 };
 
-const getProductInfo = async productId => {
-  const product = await productModel.getProductInfo(productId);
+const getProductOne = async productId => {
+  const product = await productModel.getProductOne(productId);
 
   return product;
 };
 
-export default { getProductInfo, getProduct };
+export default { getProductOne, getProduct };
