@@ -17,14 +17,9 @@ const findUserByEmail = async email => {
   return user;
 };
 
-const makeUser = async (
-  email,
-  password,
-  username,
-  address,
-  phoneNumber,
-  policyAgreed
-) => {
+const makeUser = async userSignupData => {
+  const { email, password, username, address, phoneNumber, policyAgreed } =
+    userSignupData;
   await prisma.$queryRaw`
   INSERT INTO users (email,password,username,address,phone_number,policy_agreed)
   VALUES (${email},${password},${username},${address},${phoneNumber},${policyAgreed});

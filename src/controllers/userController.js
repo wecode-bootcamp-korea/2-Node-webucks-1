@@ -7,8 +7,9 @@ const getUser = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
+  const userLoginData = { email, password };
   try {
-    const user = await userService.login(email, password);
+    const user = await userService.login(userLoginData);
     const token = await userService.createToken(user);
     res.cookie('user', token);
     res.json(user);
@@ -20,14 +21,15 @@ const login = async (req, res) => {
 const makeUser = async (req, res) => {
   const { email, password, username, address, phoneNumber, policyAgreed } =
     req.body;
-  const user = await userService.makeUser(
+  const userSignupData = {
     email,
     password,
     username,
     address,
     phoneNumber,
-    policyAgreed
-  );
+    policyAgreed,
+  };
+  const user = await userService.makeUser(userSignupData);
   res.json(user);
 };
 

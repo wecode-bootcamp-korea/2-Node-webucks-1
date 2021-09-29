@@ -9,9 +9,9 @@ const getUser = async () => {
   return users;
 };
 
-const login = async (email, password) => {
-  const user = await userModel.findUserByEmail(email);
-  const result = await bcrypt.compare(password, user.password);
+const login = async userLoginData => {
+  const user = await userModel.findUserByEmail(userLoginData.email);
+  const result = await bcrypt.compare(userLoginData.password, user.password);
 
   if (result) {
     return user;
@@ -23,24 +23,10 @@ const createToken = async user => {
   return token;
 };
 
-const makeUser = async (
-  email,
-  password,
-  username,
-  address,
-  phoneNumber,
-  policyAgreed
-) => {
-  const encryptedPw = await bcrypt.hash(password, 10);
-
-  const user = await userModel.makeUser(
-    email,
-    encryptedPw,
-    username,
-    address,
-    phoneNumber,
-    policyAgreed
-  );
+const makeUser = async userSignupData => {
+  const encryptedPw = await bcrypt.hash(userSignupData.password, 10);
+  userSignupData.password = encryptedPw;
+  const user = await userModel.makeUser(userSignupData);
   return user;
 };
 
