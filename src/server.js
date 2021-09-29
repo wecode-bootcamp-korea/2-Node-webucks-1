@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import prisma from '../prisma';
+import router from './routes';
 
 dotenv.config();
 const app = express();
@@ -8,9 +10,7 @@ const { PORT } = process.env;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get('/', (req, res) => {
-  res.send('Hello world!');
-});
+app.use('/', router);
 
 app.get('/categories', async (req, res) => {
   const allCategories = await prisma.$queryRaw`
@@ -60,27 +60,6 @@ app.get('/products/:id', async (req, res) => {
   `;
 
   res.json(selectedProduct);
-});
-
-app.post('/users', async (req, res) => {
-  await prisma.$queryRaw`
-    INSERT INTO users (email, password, username, address, phone_number)
-    VALUES ("yebom1@wecode.com", "yebom1", "이예봄", "짱이야", "010-1111-1111"),
-    ("wook1@wecode.com", "wook1", "이욱창", "짱짱이야", "010-2222-2222"),
-    ("jeonghoon1@wecode.com", "hoon1", "박정훈", "짱짱짱이야", "010-3333-3333"),
-    ("changhyeon1@wecode.com", "hyeon1", "윤창현", "짱짱짱짱이야", "010-4444-4444"),
-    ("jeongho1@wecode.com", "ho1", "신정호", "짱짱짱짱짱이야", "010-5555-5555"),
-    ("dabin1@wecode.com", "bin1", "안다빈", "짱짱짱짱짱짱이야", "010-6666-6666")
-  `;
-
-  const user = await prisma.$queryRaw`
-    SELECT *
-    FROM users
-    ORDER BY id DESC
-    LIMIT 6;
-  `;
-
-  res.json(user);
 });
 
 app.listen(PORT, () => console.log(`server on ${PORT}`));
