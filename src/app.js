@@ -12,10 +12,10 @@ app.use(express.json());
 app.use(commonAuthMiddleWare);
 app.use(preventSqlInjectionMiddleWare);
 app.use(router);
-app.use((err, req, res, next) => {
-  const { status, message: error } = err;
-  console.log(error);
-  res.status(status || 500).json({ ok: false, error: ERRORS.SERVER });
+app.use((e, req, res, next) => {
+  const { status = 500, message = ERRORS.SERVER } = e;
+  console.log(e.message);
+  res.status(status).json({ message });
 });
 
 export default app;

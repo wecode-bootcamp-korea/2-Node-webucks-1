@@ -1,10 +1,9 @@
 import { SUCCESS } from '../constants';
 import client from '.';
-import { errorHandler, ERRORS, ROLES } from '../constants';
+import { ERRORS, ROLES } from '../constants';
 
 export const findUserByEmail = async (email, next) => {
-  try {
-    return client.$queryRaw`
+  return client.$queryRaw`
     SELECT 
       u.email,
       u.created_at,
@@ -15,14 +14,10 @@ export const findUserByEmail = async (email, next) => {
     WHERE 
       u.email=${email};
     `;
-  } catch (e) {
-    next(e);
-  }
 };
 
-export const createUser = errorHandler.wrapper(
-  async ({ email, hashedPassword, nickName = null }, next) => {
-    await client.$queryRaw`
+export const createUser = async ({ email, password, nickName }, next) => {
+  await client.$queryRaw`
     INSERT INTO 
       users(
         email,
@@ -31,28 +26,21 @@ export const createUser = errorHandler.wrapper(
         ) 
     VALUES(
       ${email},
-      ${hashedPassword},
-      ${nickName}
+      ${password},
+      ${nickName || null}
       );
     `;
 
-    const user = await findUserByEmail(email, next);
+  return findUserByEmail(email, next);
+};
 
-    return { message: SUCCESS.CREATE, user: user[0] };
-  }
-);
-
-export const findUserById = async (id, next) => {
-  try {
-    return client.$queryRaw`
+export const findUserById = async id => {
+  return client.$queryRaw`
       SELECT u.id 
       FROM users u
       WHERE
         id=${id};
     `;
-  } catch (e) {
-    next(e);
-  }
 };
 
 export const auth = async (id, next) => {
@@ -70,36 +58,28 @@ export const auth = async (id, next) => {
   }
 };
 
-export const softDeleteUser = async (id, next) => {
-  try {
-    await client.user.update({
-      where: {
-        id,
-      },
-      data: {
-        role: ROLES.DELETEDUSER,
-        deletedAt: new Date(),
-      },
-    });
-    return {
-      ok: true,
-    };
-  } catch (e) {
-    next(e);
-  }
+export const softDeleteUser = async id => {
+  await client.user.update({
+    where: {
+      id,
+    },
+    data: {
+      role: ROLES.DELETEDUSER,
+      deletedAt: new Date(),
+    },
+  });
+  return {
+    ok: true,
+  };
 };
 
-export const hardDeleteUser = async (id, next) => {
-  try {
-    client.user.delete({
-      where: {
-        id,
-      },
-    });
-    return {
-      ok: true,
-    };
-  } catch (e) {
-    next(e);
-  }
+export const hardDeleteUser = async id => {
+  client.user.delete({
+    where: {
+      id,
+    },
+  });
+  return {
+    ok: true,
+  };
 };

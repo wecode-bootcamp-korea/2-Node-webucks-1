@@ -6,10 +6,11 @@ import {
   softDeleteController,
 } from '../controllers/userController';
 import { onlyForManager } from '../middleWares/authMiddleWare';
+import { errorCatcher } from '../middleWares/errorMiddleWare';
 
 const router = express();
-router.post('/join', join);
-router.post('/login', login);
+router.post('/join', errorCatcher(join));
+router.post('/login', errorCatcher(login));
 router.put('/:id', onlyForManager, softDeleteController);
 router.delete('/:id', onlyForManager, hardDeleteController);
 

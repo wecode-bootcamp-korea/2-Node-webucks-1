@@ -13,6 +13,7 @@ export const SUCCESS = {
   CREATE: 'CREATE',
   UPDATE: 'UPDATE',
   DELETE: 'DELETE',
+  SUCCESS: 'SUCCESS',
 };
 
 export const ROLES = {
@@ -21,10 +22,10 @@ export const ROLES = {
   DELETEDUSER: 'delete_user',
 };
 
-export const errorHandler = {
-  wrapper: fun => (terms, next) => {
+export const e = {
+  catch: fun => async (body, next) => {
     try {
-      return fun(terms, next);
+      await fun(body, next);
     } catch (e) {
       next(e);
     }

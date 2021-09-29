@@ -7,16 +7,17 @@ import {
   deleteLike,
 } from '../controllers/product';
 import { onlyForLoginAndActiveUser } from '../middleWares/authMiddleWare';
+import { errorCatcher } from '../middleWares/errorMiddleWare';
 
 const router = express();
 
-router.get('/', getProducts);
-router.get('/categories', getCategories);
-router.get('/:id', getProduct);
+router.get('/', errorCatcher(getProducts));
+router.get('/categories', errorCatcher(getCategories));
+router.get('/:id', errorCatcher(getProduct));
 
 router
   .all(onlyForLoginAndActiveUser)
-  .post('/:id/like', createLike)
-  .delete('/:id/like', deleteLike);
+  .post('/:id/like', errorCatcher(createLike))
+  .delete('/:id/like', errorCatcher(deleteLike));
 
 export default router;

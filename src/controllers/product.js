@@ -9,7 +9,6 @@ import {
 export const getCategories = async (req, res) => {
   const data = await getCategoriesService();
   res.json(data);
-  return;
 };
 
 export const getProducts = async (req, res) => {
@@ -23,7 +22,6 @@ export const getProducts = async (req, res) => {
 
   const data = await getProductsService(offset, user?.userId);
   res.json(data);
-  return;
 };
 
 export const getProduct = async (req, res, next) => {
@@ -37,7 +35,6 @@ export const getProduct = async (req, res, next) => {
 
   const data = await getProductService(id, user?.userId, next);
   res.json(data);
-  return;
 };
 
 export const createLike = async (req, res, next) => {
@@ -50,8 +47,7 @@ export const createLike = async (req, res, next) => {
   } = req;
 
   const data = await createLikeService(user?.userId, coffeeId, next);
-  res.json(data);
-  return;
+  res.status(201).json(data);
 };
 
 export const deleteLike = async (req, res, next) => {
@@ -64,6 +60,5 @@ export const deleteLike = async (req, res, next) => {
   } = req;
 
   const data = await deleteLikeService(user?.userId, coffeeId, next);
-  res.json(data);
-  return;
+  res.status(204).json(data);
 };

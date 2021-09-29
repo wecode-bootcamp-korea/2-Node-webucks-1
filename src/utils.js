@@ -1,16 +1,16 @@
 import { ERRORS } from './constants';
 import { loginUser } from './controllers/userController';
 
-const emailValid = id => {
+const emailValid = email => {
   const regExp =
     /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/g;
-  return regExp.test(id);
+  return regExp.test(email);
 };
 
-const passwordValid = pw => {
+const passwordValid = passowrd => {
   const regExp =
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{5,}/g;
-  return regExp.test(pw);
+  return regExp.test(passowrd);
 };
 
 export const isValid = terms => {
@@ -68,14 +68,14 @@ export const isBlackList = param => {
   return false;
 };
 
-export const checkTermsValid = fun => (terms, next) =>
-  isValid(terms) ? fun(terms, next) : { error: ERRORS.INVALID };
-
-export const resResultHandler = fun => (result, statusCode) => {
-  return result.error ? fun(result, statusCode) : fun(result);
-};
-
 export const ifOk = fun => args => {
-  const { isOk, arg } = args;
-  if (isOk) return fun(...arg);
+  const { isOk, body, e, next } = args;
+
+  switch (typeof fun) {
+    case 'function':
+      return isOk ? fun(body, next) : next(e);
+
+    default:
+      return isOk ? body : next(e);
+  }
 };

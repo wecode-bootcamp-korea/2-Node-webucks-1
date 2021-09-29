@@ -8,7 +8,7 @@ export const commonAuthMiddleWare = (req, res, next) => {
   } = req;
 
   if (authorization == 'undefined') {
-    return next();
+    next();
   }
 
   let id;
@@ -17,12 +17,12 @@ export const commonAuthMiddleWare = (req, res, next) => {
     const payload = jwt.verify(authorization, process.env.SECRET);
     id = payload.id;
   } catch (e) {
-    return next(e);
+    next(e);
   }
 
   auth(id, next).then(response => {
     if (response.ok) res.locals.user = response.data[0];
-    return next();
+    next();
   });
 };
 
@@ -32,9 +32,9 @@ export const onlyForLoginAndActiveUser = (req, res, next) => {
   } = res;
 
   if (user && (user.role === ROLES.ACTIVEUSER || user.role === ROLES.MANAGER)) {
-    return next();
+    next();
   } else {
-    return res.json({ ok: false, error: ERRORS.UNAUTH });
+    res.json({ ok: false, error: ERRORS.UNAUTH });
   }
 };
 
@@ -44,8 +44,8 @@ export const onlyForManager = (req, res, next) => {
   } = res;
 
   if (user && user.role === ROLES.MANAGER) {
-    return next();
+    next();
   } else {
-    return res.json({ ok: false, error: ERRORS.UNAUTH });
+    res.json({ ok: false, error: ERRORS.UNAUTH });
   }
 };

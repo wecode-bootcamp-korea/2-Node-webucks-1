@@ -9,7 +9,7 @@ import {
   unAuthFindManyProducts,
 } from '../models/productDAO';
 import { findManyCategories } from '../models/caegoryDAO';
-import { addAmILike, changeKeyName, isItemExist } from '../utils';
+import { addAmILike, changeKeyName, ifOk, isItemExist } from '../utils';
 
 const changeKeyNames = data => {
   changeKeyName(data, 'src', 'image');
@@ -33,9 +33,8 @@ export const getProductsService = async (offset, userId) => {
   return data;
 };
 
-//이 함수 망했는데?;;
 export const getProductService = async (id, userId, next) => {
-  const data = await findOneProduct(id, next);
+  const data = await findOneProduct(id);
 
   const datas = {
     size: {},
@@ -120,7 +119,7 @@ export const getProductService = async (id, userId, next) => {
   }
 
   if (userId) {
-    const isLikeExist = await findLikeByIds(userId, data[0].id, next);
+    const isLikeExist = await findLikeByIds(userId, data[0].id);
     data[0].isLike = !!isLikeExist.length;
   }
 
@@ -128,45 +127,26 @@ export const getProductService = async (id, userId, next) => {
 };
 
 export const createLikeService = async (userId, coffeeId, next) => {
-  const isProductExist = await findProductById(coffeeId, next);
+  const product = await findProductById(coffeeId, next);
+  let e = { status: 401, message: ERRORS.NOITEM('상품이') };
+  ifOk()({ e, isOk: !!product.length, next });
 
-  if (!isProductExist.length) {
-    return {
-      ok: false,
-      error: ERRORS.NOITEM('상품이'),
-    };
-  }
+  const like = await findLikeByIds(userId, coffeeId, next);
 
-  const isLikeExist = await findLikeByIds(userId, coffeeId, next);
+  e = { status: 401, message: ERRORS.DUPLICATE('좋아요를') };
+  ifOk()({ e, isOk: !!like.length, next });
 
-  if (isLikeExist.length) {
-    return {
-      ok: false,
-      error: ERRORS.DUPLICATE('좋아요를'),
-    };
-  }
-
-  return createLike(userId, coffeeId, next);
+  return createLike(userId, coffeeId);
 };
 
 export const deleteLikeService = async (userId, coffeeId, next) => {
-  const isProductExist = await findProductById(coffeeId, next);
+  const product = await findProductById(coffeeId, next);
+  let e = { status: 403, message: ERRORS.NOITEM('상품이') };
+  ifOk()({ isOk: !product.length, next, e });
 
-  if (!isProductExist.length) {
-    return {
-      ok: false,
-      error: ERRORS.NOITEM('상품이'),
-    };
-  }
+  const like = await findLikeByIds(userId, coffeeId, next);
+  e = { status: 403, message: ERRORS.WRONGREQ };
+  ifOk()({ isOk: !like.length, e, next });
 
-  const isLikeExist = await findLikeByIds(userId, coffeeId, next);
-
-  if (!isLikeExist.length) {
-    return {
-      ok: false,
-      error: ERRORS.WRONGREQ,
-    };
-  }
-
-  return deleteLike(userId, coffeeId, next);
+  return deleteLike(userId, coffeeId);
 };

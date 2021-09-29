@@ -1,4 +1,5 @@
 import client from '.';
+import { SUCCESS } from '../constants';
 
 export const authFindManyProducts = async offset => {
   return client.$queryRaw`
@@ -49,9 +50,8 @@ export const unAuthFindManyProducts = async offset => {
   `;
 };
 
-export const findOneProduct = async (id, next) => {
-  try {
-    return client.$queryRaw`
+export const findOneProduct = async id => {
+  return client.$queryRaw`
     SELECT
       c.id,
       c.korean_name,
@@ -84,27 +84,19 @@ export const findOneProduct = async (id, next) => {
     ORDER BY
       co.created_at DESC
     `;
-  } catch (e) {
-    next(e);
-  }
 };
 
-export const findProductById = async (id, next) => {
-  try {
-    return client.$queryRaw`
+export const findProductById = async id => {
+  return client.$queryRaw`
     SELECT c.id
     FROM coffees c
     WHERE 
       id=${id};
   `;
-  } catch (e) {
-    next(e);
-  }
 };
 
-export const createLike = async (userId, coffeeId, next) => {
-  try {
-    await client.$queryRaw`
+export const createLike = async (userId, coffeeId) => {
+  await client.$queryRaw`
     INSERT INTO
     coffees_likes(
       users_id,
@@ -116,17 +108,11 @@ export const createLike = async (userId, coffeeId, next) => {
       );
     `;
 
-    return {
-      ok: true,
-    };
-  } catch (e) {
-    next(e);
-  }
+  return { message: SUCCESS.CREATE };
 };
 
-export const deleteLike = async (userId, coffeeId, next) => {
-  try {
-    await client.$queryRaw`
+export const deleteLike = async (userId, coffeeId) => {
+  await client.$queryRaw`
       DELETE 
       FROM coffees_likes cl
       WHERE
@@ -135,17 +121,11 @@ export const deleteLike = async (userId, coffeeId, next) => {
           cl.coffees_id=${coffeeId};
     `;
 
-    return {
-      ok: true,
-    };
-  } catch (e) {
-    next(e);
-  }
+  return { message: SUCCESS.DELETE };
 };
 
-export const findLikeByIds = async (userId, coffeeId, next) => {
-  try {
-    return client.$queryRaw`
+export const findLikeByIds = async (userId, coffeeId) => {
+  return client.$queryRaw`
     SELECT l.id 
     FROM coffees_likes l
     WHERE
@@ -153,7 +133,4 @@ export const findLikeByIds = async (userId, coffeeId, next) => {
       AND
         l.coffees_id=${coffeeId};
   `;
-  } catch (e) {
-    next(e);
-  }
 };

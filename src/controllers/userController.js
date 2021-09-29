@@ -1,22 +1,30 @@
+import { ERRORS, SUCCESS } from '../constants';
 import {
   hardDeleteService,
   softDeleteService,
   joinService,
   loginService,
 } from '../services/userService';
-import { checkTermsValid, resResultHandler } from '../utils';
+import { ifOk, isValid } from '../utils';
 
 export const join = async (req, res, next) => {
+  const {
+    body: { email, password, passwordConfirm },
+  } = req;
   const { body } = req;
-  const joinResult = await checkTermsValid(joinService)(body, next);
-  const resResult = (result, code) => res.status(code || 201).json(result);
-  resResultHandler(resResult)(joinResult, 401);
+  const e = { status: 400, message: ERRORS.INVALID };
+  const isOk = isValid({ email, password }) && password === passwordConfirm;
+  const user = await ifOk(joinService)({ e, body, isOk, next });
+  delete user[0].password;
+  res.json({ message: SUCCESS.CREATE, user: user[0] });
 };
 
 export const login = async (req, res, next) => {
   const { body } = req;
-  const result = await checkTermsValid(loginService)(body, next);
-  res.json(result);
+  const e = { status: 400, message: ERRORS.INVALID };
+  const isOk = isValid(body);
+  const token = await ifOk(loginService)({ e, isOk, body, next });
+  res.json({ message: SUCCESS.SUCCESS, token });
 };
 
 export const hardDeleteController = async (req, res, next) => {
