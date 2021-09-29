@@ -1,14 +1,14 @@
 import prisma from './client';
 
-const getProduct = async () => {
-  const product = await prisma.$queryRaw`
+const getProducts = async () => {
+  const products = await prisma.$queryRaw`
   SELECT p.id, p.korean_name, p.english_name, p.category_id
   FROM products as p;
   `;
-  return product;
+  return products;
 };
 
-const getProductOne = async productId => {
+const getProduct = async productId => {
   const id = productId;
 
   const product = await prisma.$queryRaw`
@@ -19,4 +19,4 @@ const getProductOne = async productId => {
   return product;
 };
 
-export default { getProductOne, getProduct };
+export default { getProducts, getProduct };

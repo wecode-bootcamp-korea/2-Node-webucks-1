@@ -17,7 +17,7 @@ const findUserByEmail = async email => {
   return user;
 };
 
-const setUser = async (
+const makeUser = async (
   email,
   password,
   username,
@@ -78,7 +78,7 @@ const unlikeProduct = async (userId, productId) => {
 
 export default {
   getUser,
-  setUser,
+  makeUser,
   findUserByEmail,
   likeProduct,
   unlikeProduct,

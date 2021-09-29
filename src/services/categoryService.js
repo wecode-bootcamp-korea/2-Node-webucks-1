@@ -5,9 +5,9 @@ const getCategory = async () => {
   return category;
 };
 
-const setCategory = async () => {
-  const category = await categoryModel.setCategory();
+const makeCategory = async () => {
+  const category = await categoryModel.makeCategory();
   return category;
 };
 
-export default { getCategory, setCategory };
+export default { getCategory, makeCategory };

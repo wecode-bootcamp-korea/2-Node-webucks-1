@@ -17,10 +17,10 @@ const login = async (req, res) => {
   }
 };
 
-const setUser = async (req, res) => {
+const makeUser = async (req, res) => {
   const { email, password, username, address, phoneNumber, policyAgreed } =
     req.body;
-  const user = await userService.setUser(
+  const user = await userService.makeUser(
     email,
     password,
     username,
@@ -38,4 +38,4 @@ const updateProductLike = async (req, res) => {
   res.json(like);
 };
 
-export default { getUser, setUser, login, updateProductLike };
+export default { getUser, makeUser, login, updateProductLike };

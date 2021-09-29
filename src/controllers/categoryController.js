@@ -5,9 +5,9 @@ const getCategory = async (req, res) => {
   res.json(category);
 };
 
-const setCategory = async (req, res) => {
-  const category = await categoryService.setCategory();
+const makeCategory = async (req, res) => {
+  const category = await categoryService.makeCategory();
   res.json(category);
 };
 
-export default { getCategory, setCategory };
+export default { getCategory, makeCategory };

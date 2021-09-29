@@ -8,7 +8,7 @@ const getCategory = async () => {
   return category;
 };
 
-const setCategory = async () => {
+const makeCategory = async () => {
   await prisma.$queryRaw`
     INSERT INTO categories (name)
     VALUES ("클램차우더");
@@ -24,4 +24,4 @@ const setCategory = async () => {
   return category;
 };
 
-export default { getCategory, setCategory };
+export default { getCategory, makeCategory };

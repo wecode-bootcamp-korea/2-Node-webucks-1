@@ -1,13 +1,13 @@
 import { productModel } from '../models';
 
-const getProduct = async () => {
-  const product = await productModel.getProduct();
+const getProducts = async () => {
+  const products = await productModel.getProducts();
+  return products;
+};
+
+const getProduct = async productId => {
+  const product = await productModel.getProduct(productId);
   return product;
 };
 
-const getProductOne = async productId => {
-  const product = await productModel.getProductOne(productId);
-  return product;
-};
-
-export default { getProductOne, getProduct };
+export default { getProducts, getProduct };

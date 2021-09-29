@@ -1,17 +1,17 @@
 import { productService } from '../services';
 
-const getProduct = async (req, res) => {
-  const product = await productService.getProduct();
+const getProducts = async (req, res) => {
+  const products = await productService.getProducts();
 
-  res.json(product);
+  res.json(products);
 };
 
-const getProductOne = async (req, res) => {
+const getProduct = async (req, res) => {
   const id = req.params.id;
 
-  const product = await productService.getProductOne(id);
+  const product = await productService.getProduct(id);
 
   res.json(product);
 };
 
-export default { getProduct, getProductOne };
+export default { getProducts, getProduct };

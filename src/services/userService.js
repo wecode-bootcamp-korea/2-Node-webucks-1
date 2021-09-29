@@ -23,7 +23,7 @@ const createToken = async user => {
   return token;
 };
 
-const setUser = async (
+const makeUser = async (
   email,
   password,
   username,
@@ -33,7 +33,7 @@ const setUser = async (
 ) => {
   const encryptedPw = await bcrypt.hash(password, 10);
 
-  const user = await userModel.setUser(
+  const user = await userModel.makeUser(
     email,
     encryptedPw,
     username,
@@ -55,4 +55,4 @@ const updateProductLike = async (token, productId) => {
   }
 };
 
-export default { getUser, setUser, login, createToken, updateProductLike };
+export default { getUser, makeUser, login, createToken, updateProductLike };
