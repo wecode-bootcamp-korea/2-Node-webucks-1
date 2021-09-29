@@ -37,9 +37,10 @@ const loginUser = async email => {
   return user;
 };
 
-const createUser = async (userData, hash) => {
-  const { email, username, address, phone_number } = userData;
-  await prisma.$queryRaw`
+const createUser = async (userData, hash, next) => {
+  try {
+    const { email, username, address, phone_number } = userData;
+    await prisma.$queryRaw`
     INSERT INTO
       users(
         email, 
@@ -56,13 +57,16 @@ const createUser = async (userData, hash) => {
         ${phone_number}
       );
     `;
-  const [newUser] = await prisma.$queryRaw`
+    const [newUser] = await prisma.$queryRaw`
     SELECT email, username
     FROM users
     WHERE email=${email};
   `;
 
-  return newUser;
+    return newUser;
+  } catch (err) {
+    next(err);
+  }
 };
 
 const deleteUser = async userId => {

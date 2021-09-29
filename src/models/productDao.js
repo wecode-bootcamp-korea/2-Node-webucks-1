@@ -1,6 +1,6 @@
 import prisma from '../../prisma';
 
-const getProducts = async () => {
+const getProducts = async categoryId => {
   const products = await prisma.$queryRaw`
   SELECT 
     p.id, 
@@ -14,6 +14,7 @@ const getProducts = async () => {
   ON c.id = p.category_id
   JOIN images i
   ON i.product_id = p.id
+  WHERE c.id=${categoryId}
   `;
   return products;
 };

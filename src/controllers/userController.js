@@ -32,22 +32,20 @@ const loginUser = async (req, res) => {
   }
 };
 
-const createUser = async (req, res) => {
+const createUser = async (req, res, next) => {
   try {
     const userData = req.body;
-    const newUser = await userService.createUser(userData);
+    const newUser = await userService.createUser(userData, next);
     if (!newUser) {
-      res.status(400).json({
-        message: 'USER_ALREADY_EXIST',
-      });
+      next();
     } else {
-      res.status(201).json({
+      return res.status(201).json({
         message: 'CREATED',
         newUser,
       });
     }
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 

@@ -9,12 +9,12 @@ router.get('/:id', validateToken, productController.getProduct);
 router.get('/:id/like', validateToken, productController.likeProduct);
 router.post('/:id/comment', validateToken, productController.commentProduct);
 router.put(
-  '/:id/comment/update',
+  '/:id/comment',
   validateToken,
   productController.updateCommentProduct
 );
 router.delete(
-  '/:id/comment/delete',
+  '/:id/comment',
   validateToken,
   productController.deleteCommentProduct
 );

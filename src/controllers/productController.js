@@ -2,7 +2,8 @@ import { productService } from '../services';
 
 const getProducts = async (req, res) => {
   try {
-    const products = await productService.getProducts();
+    const categoryId = req.query.categoryId;
+    const products = await productService.getProducts(Number(categoryId));
     res.status(200).json({
       message: 'SUCCESS',
       products,

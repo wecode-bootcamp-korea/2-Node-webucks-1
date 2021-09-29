@@ -11,9 +11,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/', router);
 app.use((err, req, res, next) => {
-  const { status, message } = err;
+  const { status } = err;
   console.error(err);
-  res.status(status || 500).json({ message });
+  res.status(status || 500).json({ message: err.meta.message });
 });
 
 export default app;

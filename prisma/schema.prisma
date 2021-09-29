@@ -73,19 +73,20 @@ model Nutrition {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  email         String    @unique
+  id            Int         @id @default(autoincrement())
+  email         String      @unique
   password      String
   username      String?
   address       String?
   phone_number  String?
-  policy_agreed Boolean   @default(true)
-  createdAt     DateTime  @default(now()) @map("created_at")
-  updatedAt     DateTime? @updatedAt @map("updated_at")
-  deletedAt     DateTime? @map("deleted_at")
-  isDeleted     Boolean   @default(false) @map("is_deleted")
+  policy_agreed Boolean     @default(true)
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime?   @updatedAt @map("updated_at")
+  deletedAt     DateTime?   @map("deleted_at")
+  isDeleted     Boolean     @default(false) @map("is_deleted")
   like          Like[]
   comment       Comment[]
+  reComment     ReComment[]
 
   @@map("users")
 }
@@ -101,16 +102,32 @@ model Like {
 }
 
 model Comment {
+  id        Int         @id @default(autoincrement())
+  contents  String
+  userId    Int         @map("user_id")
+  productId Int         @map("product_id")
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime?   @updatedAt @map("updated_at")
+  deletedAt DateTime?   @map("deleted_at")
+  isDeleted Boolean     @default(false) @map("is_deleted")
+  user      User        @relation(fields: [userId], references: [id])
+  product   Product     @relation(fields: [productId], references: [id])
+  reComment ReComment[]
+
+  @@map("comments")
+}
+
+model ReComment {
   id        Int       @id @default(autoincrement())
   contents  String
   userId    Int       @map("user_id")
-  productId Int       @map("product_id")
+  commentId Int       @map("comment_id")
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
   isDeleted Boolean   @default(false) @map("is_deleted")
   user      User      @relation(fields: [userId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id])
+  comment   Comment   @relation(fields: [commentId], references: [id])
 
-  @@map("comments")
+  @@map("re_comments")
 }

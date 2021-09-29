@@ -27,10 +27,10 @@ const loginUser = async (email, password) => {
   }
 };
 
-const createUser = async userData => {
+const createUser = async (userData, next) => {
   const { password } = userData;
   const hash = await bcrypt.hash(password, 10);
-  return await userDao.createUser(userData, hash);
+  return await userDao.createUser(userData, hash, next);
 };
 
 const deleteUser = async userId => {
