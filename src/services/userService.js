@@ -1,4 +1,4 @@
-import userDao from '../models/userDao';
+import { userDao } from '../models/userDao';
 
 const createUser = async (email, password, username, address, phone_number) => {
   return await userDao.createUser(
