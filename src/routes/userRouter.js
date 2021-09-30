@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', userController.getUser);
 router.post('/login', userController.login);
-router.post('/new', userController.makeUser);
+router.post('/', userController.makeUser);
 router.post('/like', userController.updateProductLike);
 
 export default router;
