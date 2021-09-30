@@ -4,4 +4,10 @@ const wrapAsync = fn => {
   };
 };
 
-export { wrapAsync };
+const throwError = (errorMessage, statusCode) => {
+  const err = new Error(errorMessage);
+  err.status = statusCode;
+  throw err;
+};
+
+export { wrapAsync, throwError };

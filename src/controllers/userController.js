@@ -28,7 +28,7 @@ const makeUser = wrapAsync(async (req, res) => {
     policyAgreed,
   };
   const user = await userService.makeUser(userSignupData);
-  res.json(user);
+  res.status(201).json(user);
 });
 
 const updateProductLike = wrapAsync(async (req, res) => {
