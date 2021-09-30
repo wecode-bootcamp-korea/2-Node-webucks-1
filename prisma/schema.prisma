@@ -26,6 +26,8 @@ model Product {
   categoryId       Int              @map("category_id")
   iamges           Image[]
   productAllergies ProductAllergy[]
+  likes            Like[]
+  comments         Comment[]
   nutrition        Nutrition?
 
   @@map("products")
@@ -74,13 +76,38 @@ model Nutrition {
 }
 
 model User {
-  id           Int     @id @default(autoincrement())
-  email        String  @unique
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
   password     String
   username     String?
   address      String?
-  phoneNumber  String? @map("phone_number")
-  policyAgreed Boolean @default(true) @map("policy_agreed")
+  phoneNumber  String?   @map("phone_number")
+  policyAgreed Boolean   @default(true) @map("policy_agreed")
+  likes        Like[]
+  comments     Comment[]
 
   @@map("users")
+}
+
+model Like {
+  id        Int @id @default(autoincrement())
+  userId    Int @map("user_id")
+  productId Int @map("product_id")
+
+  Product Product @relation(fields: [productId], references: [id])
+  User    User    @relation(fields: [userId], references: [id])
+  @@map("likes")
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  content   String    @db.VarChar(500)
+  userId    Int       @map("user_id")
+  productId Int       @map("product_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  Product   Product   @relation(fields: [productId], references: [id])
+  User      User      @relation(fields: [userId], references: [id])
+
+  @@map("comments")
 }
