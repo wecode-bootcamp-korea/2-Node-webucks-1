@@ -1,22 +1,20 @@
 import prisma from '../../prisma';
 
-const allProducts = async categoryId => {
+const addProduct = async (categoryId, koreanName, englishName) => {
+  await prisma.$queryRaw`
+  INSERT INTO products (category_id, korean_name, english_name)
+  VALUES (${categoryId}, ${koreanName}, ${englishName});
+  `;
+
   const products = await prisma.$queryRaw`
   SELECT 
     p.id, 
     p.korean_name, 
     p.english_name, 
-    c.name, 
-    c.id, 
-    i.image_url
+    p.category_id
   FROM products p
-  JOIN categories c
-  ON c.id = p.category_id
-  JOIN images i
-  ON i.product_id = p.id
-  WHERE c.id=${categoryId}
   `;
   return products;
 };
 
-export default { allProducts };
+export default { addProduct };
