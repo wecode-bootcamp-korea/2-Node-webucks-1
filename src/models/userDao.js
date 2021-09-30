@@ -13,11 +13,19 @@ const getUsers = async () => {
   return users;
 };
 
-const findUser = async id => {
+const findUserById = async id => {
   const [isCreatedUser] = await prisma.$queryRaw`
       SELECT EXISTS(SELECT * FROM users where id=${id})
     ;`;
   return isCreatedUser;
+};
+
+const findUserByEmail = async email => {
+  const [user] = await prisma.$queryRaw`
+    SELECT id, email, username from users
+    WHERE email=${email};
+  `;
+  return user;
 };
 
 const loginUser = async email => {
@@ -37,10 +45,9 @@ const loginUser = async email => {
   return user;
 };
 
-const createUser = async (userData, hash, next) => {
-  try {
-    const { email, username, address, phone_number } = userData;
-    await prisma.$queryRaw`
+const createUser = async (userData, hash) => {
+  const { email, username, address, phone_number } = userData;
+  await prisma.$queryRaw`
     INSERT INTO
       users(
         email, 
@@ -57,16 +64,12 @@ const createUser = async (userData, hash, next) => {
         ${phone_number}
       );
     `;
-    const [newUser] = await prisma.$queryRaw`
+  const [newUser] = await prisma.$queryRaw`
     SELECT email, username
     FROM users
     WHERE email=${email};
   `;
-
-    return newUser;
-  } catch (err) {
-    next(err);
-  }
+  return newUser;
 };
 
 const deleteUser = async userId => {
@@ -84,6 +87,7 @@ export default {
   getUsers,
   loginUser,
   createUser,
-  findUser,
+  findUserById,
+  findUserByEmail,
   deleteUser,
 };

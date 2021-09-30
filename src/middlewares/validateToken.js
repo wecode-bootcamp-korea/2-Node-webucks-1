@@ -15,7 +15,7 @@ const validateToken = async (req, res, next) => {
     }
     const decoded = jwt.verify(token.split('=')[1], secret);
     const id = decoded.id;
-    const foundUser = await userService.findUser(id);
+    const foundUser = await userService.findUserById(id);
     if (foundUser === 0) {
       return res.status(401).json({
         message: 'USER_NOT_FOUND',

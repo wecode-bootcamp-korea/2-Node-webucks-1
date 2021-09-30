@@ -10,8 +10,8 @@ const getUsers = async () => {
   return await userDao.getUsers();
 };
 
-const findUser = async id => {
-  const isCreatedUser = await userDao.findUser(id);
+const findUserById = async id => {
+  const isCreatedUser = await userDao.findUserById(id);
   const foundUser = isCreatedUser[Object.keys(isCreatedUser)[0]];
   return foundUser;
 };
@@ -27,10 +27,17 @@ const loginUser = async (email, password) => {
   }
 };
 
-const createUser = async (userData, next) => {
-  const { password } = userData;
+const createUser = async userData => {
+  const { email, password } = userData;
+  const foundUser = await userDao.findUserByEmail(email);
+  if (foundUser) {
+    const err = new Error('ALREADY_EXISTED_USER');
+    err.status = 401;
+    throw err;
+  }
   const hash = await bcrypt.hash(password, 10);
-  return await userDao.createUser(userData, hash, next);
+  const newUser = await userDao.createUser(userData, hash);
+  return newUser;
 };
 
 const deleteUser = async userId => {
@@ -41,6 +48,6 @@ export default {
   getUsers,
   loginUser,
   createUser,
-  findUser,
+  findUserById,
   deleteUser,
 };
