@@ -5,4 +5,4 @@ const getCategory = async (req, res) => {
   res.json(categories);
 };
 
-export default {getCategory};
+export default { getCategory };

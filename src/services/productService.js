@@ -1,13 +1,13 @@
 import { productDao } from '../models';
 
-const getProduct = async () => {
-  const products = await productDao.getProduct();
+const getAllProducts = async () => {
+  const products = await productDao.getAllProducts();
   return products;
 };
 
-const getProductOne = async drinkId => {
-  const product = await productDao.getProductOne(drinkId);
+const getProduct = async drinkId => {
+  const product = await productDao.getProduct(drinkId);
   return product;
 };
 
-export default { getProduct, getProductOne };
+export default { getAllProducts, getProduct };

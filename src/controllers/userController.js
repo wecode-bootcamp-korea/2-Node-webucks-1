@@ -1,24 +1,10 @@
 import { userService } from '../services';
 
-const getUser = async (req, res) => {
-  const users = await userService.getUser();
-
-  res.json(users);
-};
-
-const creatUser = async (req, res) => {
+const getUsers = async (req, res) => {
   try {
-    const { email, password, username, address, phone_number } = req.body;
-    const user = await userService.creatUser(
-      email,
-      password,
-      username,
-      address,
-      phone_number
-    );
+    const users = await userService.getUsers();
 
-    res.status(201).json({ message: user });
-
+    res.json(users);
   } catch (err) {
     res.status(400).json({
       status: 'failed',
@@ -27,4 +13,33 @@ const creatUser = async (req, res) => {
   }
 };
 
-export default { getUser, creatUser };
+const creatUser = async (req, res) => {
+  try {
+    const user = await userService.creatUser(req.body);
+    
+    res.status(201).json({ message: user.message });
+  } catch (err) {
+    const { statusCode, message } = err;
+    res.status(statusCode).json({
+      message,
+    });
+  }
+};
+
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userService.loginUser(email, password);
+    console.log(user);
+
+    res.cookie('user', user.token);
+    res.status(201).json({ message: user.message });
+  } catch (err) {
+    const { statusCode, message } = err;
+    res.status(statusCode).json({
+      message,
+    });
+  }
+};
+
+export default { getUsers, creatUser, loginUser };
