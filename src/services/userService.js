@@ -38,19 +38,19 @@ const makeUser = async userSignupData => {
   return user;
 };
 
-const updateProductLike = async (token, productId) => {
-  const decoded = jwt.verify(token, SECRET_KEY);
-  const user = await userModel.findUserByEmail(decoded.email);
-  const like = await userModel.getLike(user.id, productId);
+const updateProductLike = async (decodedUser, productId) => {
+  // const decoded = jwt.verify(token, SECRET_KEY);
+  // const user = await userModel.findUserByEmail(decoded.email);
+  const like = await userModel.getLike(decodedUser.id, productId);
   const product = await productModel.getProduct(productId);
 
-  if (!user) throwError('INVALID_USER', 401);
+  // if (!user) throwError('INVALID_USER', 401);
   if (!product) throwError('INVALID_PRODUCT', 401);
 
   if (like) {
-    return await userModel.unlikeProduct(user.id, productId);
+    return await userModel.unlikeProduct(decodedUser.id, productId);
   } else {
-    return await userModel.likeProduct(user.id, productId);
+    return await userModel.likeProduct(decodedUser.id, productId);
   }
 };
 
