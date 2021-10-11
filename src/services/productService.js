@@ -10,4 +10,9 @@ const getProduct = async productId => {
   return product;
 };
 
-export default { getProducts, getProduct };
+const insertComment = async commentInsertData => {
+  const comment = await productModel.insertComment(commentInsertData);
+  return comment;
+};
+
+export default { getProducts, getProduct, insertComment };
